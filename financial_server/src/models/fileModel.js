@@ -1,15 +1,45 @@
-// fileSchema.js
-import mongoose from 'mongoose';
+import { DataTypes, Model } from 'sequelize';
+import sequelize from '../services/connectionService.js'; 
 
-const fileSchema = new mongoose.Schema({
-    fileName: { type: String, required: true },
-    fileSize: { type: Number, required: true },
-    importDate: { type: Date, default: Date.now },
-    fileHash: { type: String, required: true, unique: true },
-    mediaType: { type: String, required: true },
-    encoding: { type: String, required: true },
-    path: { type: String, required: true },
-    isProcessed: { type: Boolean, default: false }
+class File extends Model {}
+
+File.init({
+  fileName: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  fileSize: {
+    type: DataTypes.INTEGER, 
+    allowNull: false
+  },
+  importDate: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
+  },
+  fileHash: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
+  mediaType: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  encoding: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  path: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  isProcessed: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  }
+}, {
+  sequelize,
+  modelName: 'File'
 });
 
-export default mongoose.model('File', fileSchema);
+export default File;

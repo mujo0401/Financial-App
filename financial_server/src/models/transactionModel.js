@@ -1,12 +1,36 @@
-import mongoose from 'mongoose';
+import { DataTypes, Model } from 'sequelize';
+import sequelize from '../services/connectionService.js'; 
 
-const transactionSchema = new mongoose.Schema({
-  categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true, index: true },
-  descriptionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Description', required: true, index: true },
-  amount: { type: Number, required: true },
-  date: { type: Date, required: true }
+class Transaction extends Model {}
+
+Transaction.init({
+  categoryId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Categories',
+      key: 'id'
+    }
+  },
+  descriptionId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Descriptions', 
+      key: 'id'
+    }
+  },
+  amount: {
+    type: DataTypes.DECIMAL(10, 2), 
+    allowNull: false
+  },
+  date: {
+    type: DataTypes.DATE,
+    allowNull: false
+  }
+}, {
+  sequelize,
+  modelName: 'Transaction'
 });
-
-const Transaction = mongoose.model('Transaction', transactionSchema);
 
 export default Transaction;

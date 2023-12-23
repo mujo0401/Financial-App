@@ -1,9 +1,16 @@
-import mongoose from 'mongoose';
+import { DataTypes, Model } from 'sequelize';
+import sequelize from '../services/connectionService.js'; 
 
-const descriptionSchema = new mongoose.Schema({
-  name: { type: String, required: true }
+class Description extends Model {}
+
+Description.init({
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false
+  }
+}, {
+  sequelize, 
+  modelName: 'Description' 
 });
-
-const Description = mongoose.model('Description', descriptionSchema);
 
 export default Description;
