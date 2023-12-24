@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import './App.css';
-import backgroundImage from 'components/assets/images/background.png'; // Adjust the path as necessary
+import backgroundImage from 'components/assets/images/background.png';
 import Navbar from 'components/navigation/Navbar';
 import checkBackendHealth from 'components/services/healthCheckService';
 import TransactionEntry from 'components/pages/transactionEntry';

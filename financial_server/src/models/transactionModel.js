@@ -1,5 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
-import sequelize from '../services/connectionService.js'; 
+import sequalize from '../services/connectionService.js'; 
+import Category from './categoryModel.js'; 
+import Description from './descriptionModel.js';
 
 class Transaction extends Model {}
 
@@ -29,8 +31,16 @@ Transaction.init({
     allowNull: false
   }
 }, {
-  sequelize,
-  modelName: 'Transaction'
+  sequelize: sequalize, 
+  modelName: 'Transaction',
+  tableName: 'transaction', 
+  schema: 'dbo'
 });
+
+Transaction.belongsTo(Category, { as: 'category', foreignKey: 'categoryId' }); 
+Category.hasMany(Transaction, { as: 'category', foreignKey: 'categoryId' }); 
+
+Transaction.belongsTo(Description, {as: 'description', foreignKey: 'descriptionId' }); 
+Description.hasMany(Transaction, { as: 'description', foreignKey: 'descriptionId' });
 
 export default Transaction;

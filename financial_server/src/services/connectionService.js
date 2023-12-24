@@ -1,18 +1,23 @@
 import { Sequelize } from 'sequelize';
 import tedious from 'tedious';
 
-const host = 'localhost\\SQLEXPRESS01';
 const database = 'financedb';
-const driver = 'ODBC Driver 18 for SQL Server';
-const timeout = '30';
-const trust_connection = 'Trusted_Connection=yes';
-
-const SQL_SERVER_URI = `mssql://${host}/${database}?driver=${driver}&TrustServerCertificate=yes&Connection+Timeout=${timeout}&${trust_connection}`;
+const user = 'sa';
+const password = 'password'; 
 
 
-const connect = new Sequelize(SQL_SERVER_URI, {
+const sequelize = new Sequelize(database, user, password, {
+  host: 'localhost', 
   dialect: 'mssql',
-  dialectModule: tedious
+  logging: console.log,
+  dialectModule: tedious,
+  dialectOptions: {
+    options: {
+      trustServerCertificate: true,
+      integratedSecurity: true, 
+    },
+    instanceName: 'SQLEXPRESS01',
+  },
 });
 
-export default connect;
+export default sequelize;

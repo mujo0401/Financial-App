@@ -3,7 +3,7 @@ import cors from 'cors';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import morgan from 'morgan';
-import connect from './services/connectionService.js';
+import testConnection from './services/testConnection.js';
 import transactionRoute from './routes/transactionRoute.js';
 import categoryRoute from './routes/categoryRoute.js'; 
 import descriptionRoute from './routes/descriptionRoute.js'; 
@@ -25,12 +25,12 @@ const PORT = process.env.PORT || 3000;
 
 const connectDB = async () => {
   try {
-    console.log('Connecting to financedb...');
-    await connect.authenticate();
-    console.log('Connected to SQL Server');
+    await testConnection();
+    server.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
   } catch (err) {
     console.error(`Could not connect to SQL Server: ${err}`);
-    process.exit(1);
   }
 };
 
@@ -64,10 +64,6 @@ server.get('/api/health', (req, res) => {
 // React server routing for frontend
 server.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html')); 
-});
-
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
 });
 
 export default server;

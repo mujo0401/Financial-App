@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import sequelize from '../services/connectionService.js'; 
+import sequalize from '../services/connectionService.js'; 
 
 class File extends Model {}
 
@@ -38,7 +38,7 @@ File.init({
     defaultValue: false
   }
 }, {
-  sequelize,
+    sequelize: sequalize, 
   modelName: 'File'
 });
 

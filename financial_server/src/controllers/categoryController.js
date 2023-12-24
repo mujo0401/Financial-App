@@ -1,12 +1,13 @@
 import Category from '../models/categoryModel.js'; 
 
 const getCategories = async (req, res) => {
-  try {
-    const categories = await Category.find({});
+try {
+    const categories = await Category.findAll({});
     res.json(categories);
-  } catch (error) {
+} catch (error) {
+    console.error("Error fetching categories:", error);  // Log the actual error
     res.status(500).json({ error: 'Error fetching categories' });
-  }
+}
 };
 
 export default {

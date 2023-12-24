@@ -26,6 +26,7 @@
     "dev": "concurrently \"cd ../financial_client && npm start\" \"npm run start-server\""
   },
   "author": "",
+  "proxy": "http://localhost:3000",
   "license": "ISC",
   "devDependencies": {
     "@babel/cli": "^7.23.4",

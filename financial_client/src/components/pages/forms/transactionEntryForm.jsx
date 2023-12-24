@@ -89,8 +89,8 @@ const TransactionEntryForm = () => {
         required 
       />
        <datalist id="categoryOptions">
-        {categories.map((category) => (
-          <option key={category._id} value={category.name} />
+       {Array.isArray(categories) && categories.map((category) => (
+  <option key={category._id} value={category.name} />
         ))}
       </datalist>
 
@@ -103,7 +103,7 @@ const TransactionEntryForm = () => {
         required 
       />
      <datalist id="descriptionOptions">
-        {descriptions.map((description) => (
+       {Array.isArray(descriptions) && descriptions.map((description) => (
           <option key={description._id} value={description.name} />
         ))}
       </datalist>

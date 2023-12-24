@@ -1,11 +1,19 @@
-import { getCategoryWiseSpending, getSpendingOverTime, getMonthlyIncomeVsExpense } from '../repositories/dashboardRepository.js';
+import { /*getCategoryWiseSpending,*/ getSpendingOverTime, getMonthlyIncomeVsExpense } from '../repositories/dashboardRepository.js';
+
+// Helper function to validate date
+const isValidDate = (date) => {
+  return !isNaN(Date.parse(date));
+};
 
 // Controller function for getting spending over time
 export const handleSpendingOverTime = async (req, res) => {
   const { startDate, endDate } = req.query;
 
+  if (!isValidDate(startDate) || !isValidDate(endDate)) {
+    return res.status(400).send('Invalid date format');
+  }
+
   try {
-    // Ensure that startDate and endDate are properly converted to Date objects
     const data = await getSpendingOverTime(new Date(startDate), new Date(endDate));
     res.json(data);
   } catch (error) {
@@ -15,29 +23,35 @@ export const handleSpendingOverTime = async (req, res) => {
 };
 
 // Controller function for getting category-wise spending
-export const handleCategoryWiseSpendingRequest = async (req, res, next) => {
+/*export const handleCategoryWiseSpendingRequest = async (req, res) => {
+  const { startDate, endDate } = req.query;
+
+  if (!isValidDate(startDate) || !isValidDate(endDate)) {
+    return res.status(400).send('Invalid date format');
+  }
+
   try {
-    const { startDate, endDate } = req.query;
     const data = await getCategoryWiseSpending(new Date(startDate), new Date(endDate));
     res.json(data);
   } catch (error) {
-    if (error.message === 'Invalid date parameters') {
-      return res.status(400).send(error.message);
-    }
-    next(error);
+    console.error("Error in getCategoryWiseSpending:", error);
+    res.status(500).send("Error fetching category-wise spending data");
   }
-};
+};*/
 
 // Controller function for monthly income vs expense
-export const handleMonthlyIncomeVsExpense = async (req, res, next) => {
+export const handleMonthlyIncomeVsExpense = async (req, res) => {
+  const { startDate, endDate } = req.query;
+
+  if (!isValidDate(startDate) || !isValidDate(endDate)) {
+    return res.status(400).send('Invalid date format');
+  }
+
   try {
-    const { startDate, endDate } = req.query;
     const data = await getMonthlyIncomeVsExpense(new Date(startDate), new Date(endDate));
     res.json(data);
   } catch (error) {
-    if (error.message === 'Invalid date parameters') {
-      return res.status(400).send(error.message);
-    }
-    next(error);
+    console.error("Error in getMonthlyIncomeVsExpense:", error);
+    res.status(500).send("Error fetching monthly income vs expense data");
   }
 };
