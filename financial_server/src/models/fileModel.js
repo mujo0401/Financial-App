@@ -1,9 +1,7 @@
-import { DataTypes, Model } from 'sequelize';
-import sequalize from '../services/connectionService.js'; 
+import { DataTypes } from 'sequelize';
+import connect from '../services/connectionService.js'; 
 
-class File extends Model {}
-
-File.init({
+const File = connect.define('Fild', {
   fileName: {
     type: DataTypes.STRING,
     allowNull: false
@@ -38,8 +36,9 @@ File.init({
     defaultValue: false
   }
 }, {
-    sequelize: sequalize, 
-  modelName: 'File'
+  tableName: 'File', 
+  schema: 'dbo', 
+  timestamps: false
 });
 
 export default File;

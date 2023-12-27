@@ -1,9 +1,7 @@
-import { DataTypes, Model } from 'sequelize';
-import sequalize from '../services/connectionService.js'; 
+import { DataTypes } from 'sequelize';
+import connect from '../services/connectionService.js'; 
 
-class Description extends Model {}
-
-Description.init({
+const Description = connect.define('Description', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -15,10 +13,8 @@ Description.init({
     allowNull: false
   }
 }, {
-  sequelize: sequalize, 
-  modelName: 'Description', 
-  tableName: 'description',
-  schema: 'dbo',
+  tableName: 'Description', 
+  schema: 'dbo', 
   timestamps: false
 });
 

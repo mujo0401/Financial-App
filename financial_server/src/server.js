@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+
 import { fileURLToPath } from 'url';
 import path from 'path';
 import morgan from 'morgan';
@@ -8,7 +9,6 @@ import transactionRoute from './routes/transactionRoute.js';
 import categoryRoute from './routes/categoryRoute.js'; 
 import descriptionRoute from './routes/descriptionRoute.js'; 
 import transactionImportRoute from './routes/transactionImportRoute.js';
-import healthRoute from './routes/healthRoute.js';
 import dashboardRoute from './routes/dashboardRoute.js';
 
 const server = express();
@@ -36,30 +36,39 @@ const connectDB = async () => {
 
 connectDB();
 
+const connectionStatus = async () => {
+  let status = 'OK';
+  try {
+    await testConnection(); // Test the database connection
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    status = 'Database connection failed';
+  }
+  return status;
+};
+
+// Modify the health route to use connectionStatus for on-demand checks
+server.get('/api/health', async (req, res) => {
+  const dbStatus = await connectionStatus();
+  if (dbStatus === 'OK') {
+    res.send('API and Database are healthy');
+  } else {
+    res.status(500).send(dbStatus); // Send the error status
+  }
+});
+
+// Periodically check the health and log the status
+const PING_INTERVAL = 1000 * 30; // every 30 seconds
+setInterval(async () => {
+  const status = await connectionStatus();
+  if (status !== 'OK') {
+    console.error('Health check failed:', status);
+  } else {
+  }
+}, PING_INTERVAL);
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Static file serving
-server.use(express.static(path.join(__dirname, 'public'))); 
-
-// API routes
-server.use('/api/dashboard', dashboardRoute);
-server.use('/api/categories', categoryRoute);
-server.use('/api/descriptions', descriptionRoute);
-server.use('/api/transactions', transactionRoute);
-server.use('/api/files', transactionImportRoute); 
-server.use('/api/health', healthRoute);
-
-// Error handling middleware
-server.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
-});
-
-// In your Express server setup:
-server.get('/api/health', (req, res) => {
-  res.status(200).send('OK');
-});
 
 // React server routing for frontend
 server.get('/*', (req, res) => {

@@ -5,7 +5,7 @@ try {
     const categories = await Category.findAll({});
     res.json(categories);
 } catch (error) {
-    console.error("Error fetching categories:", error);  // Log the actual error
+    console.error("Error fetching categories:", error); 
     res.status(500).json({ error: 'Error fetching categories' });
 }
 };

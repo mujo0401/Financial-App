@@ -5,7 +5,7 @@ const DESC_URL = 'http://localhost:3000/api/descriptions';
 
      const getDescriptions = async () => {
       try {
-        const response = await axios.get(DESC_URL);
+        const response = await fetch(DESC_URL);
         return response.data;
       } catch (error) {
         console.error('Error fetching descriptions:', error);

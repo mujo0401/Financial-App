@@ -1,9 +1,7 @@
-import { DataTypes, Model } from 'sequelize';
-import sequalize from '../services/connectionService.js'; 
+import { DataTypes } from 'sequelize';
+import connect from '../services/connectionService.js'; 
 
-class Category extends Model {}
-
-Category.init({
+const Category = connect.define('Category', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -15,9 +13,7 @@ Category.init({
     allowNull: false
   }
 }, {
-  sequelize: sequalize, 
-  modelName: 'Category',
-  tableName: 'category', 
+  tableName: 'Category', 
   schema: 'dbo', 
   timestamps: false
 });

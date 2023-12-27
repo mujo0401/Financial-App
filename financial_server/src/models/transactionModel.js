@@ -1,16 +1,20 @@
-import { DataTypes, Model } from 'sequelize';
-import sequalize from '../services/connectionService.js'; 
+import { DataTypes } from 'sequelize';
+import connect from '../services/connectionService.js'; 
 import Category from './categoryModel.js'; 
 import Description from './descriptionModel.js';
 
-class Transaction extends Model {}
-
-Transaction.init({
+const TransactionDetails = connect.define('TransactionDetails', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+    allowNull: false
+  },
   categoryId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'Categories',
+      model: Category,
       key: 'id'
     }
   },
@@ -18,7 +22,7 @@ Transaction.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'Descriptions', 
+      model: Description,
       key: 'id'
     }
   },
@@ -31,16 +35,14 @@ Transaction.init({
     allowNull: false
   }
 }, {
-  sequelize: sequalize, 
-  modelName: 'Transaction',
-  tableName: 'transaction', 
+  tableName: 'TransactionDetails', 
   schema: 'dbo'
 });
 
-Transaction.belongsTo(Category, { as: 'category', foreignKey: 'categoryId' }); 
-Category.hasMany(Transaction, { as: 'category', foreignKey: 'categoryId' }); 
+TransactionDetails.belongsTo(Category, { foreignKey: 'categoryId' }); 
+Category.hasMany(TransactionDetails, { foreignKey: 'categoryId' }); 
 
-Transaction.belongsTo(Description, {as: 'description', foreignKey: 'descriptionId' }); 
-Description.hasMany(Transaction, { as: 'description', foreignKey: 'descriptionId' });
+TransactionDetails.belongsTo(Description, { foreignKey: 'descriptionId' }); 
+Description.hasMany(TransactionDetails, { foreignKey: 'descriptionId' });
 
-export default Transaction;
+export default TransactionDetails;

@@ -1,28 +1,31 @@
-import axios from 'axios';
-
 const TRANSACTION_URL = 'http://localhost:3000/api/transactions'; 
 
 const transactionEntryService = {
   addTransaction: async (transactionData) => {
     try {
-     const response = axios.post(TRANSACTION_URL, transactionData, {
+      const response = await fetch(TRANSACTION_URL, {
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': '*/*',
-          'Cache-Control': 'no-cache'
+          'Content-Type': 'application/json'
         },
+        body: JSON.stringify(transactionData)
       });
-      return response.data;
+
+      if (!response.ok) {
+        // Handle HTTP errors
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
+      }
+
+      return await response.json();
     } catch (error) {
       console.error('Error adding transactions:', error);
-      if (error.response) {
-        console.error('Error Data:', error.response.data);
-        console.error('Error Status:', error.response.status);
-        console.error('Error Headers:', error.response.headers);
-      } else if (error.request) {
-        console.error('Error Request:', error.request);
+
+      // Handle non-HTTP errors
+      if (error instanceof TypeError) {
+        console.error('Network Error or CORS issue:', error.message);
       } else {
-        console.error('Error Message:', error.message);
+        console.error('Other Error:', error.message);
       }
 
       return [];

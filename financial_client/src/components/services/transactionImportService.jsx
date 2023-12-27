@@ -1,11 +1,16 @@
-import axios from 'axios';
-
 const FILE_URL = 'http://localhost:3000/api/files'; 
 
 const getFileByHash = async (fileId) => {
     try {
-        const response = await axios.get(`${FILE_URL}/${fileId}`);
-        return response.data.hash;
+        const response = await fetch(`${FILE_URL}/${fileId}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            throw new TypeError("Oops, we haven't got JSON!");
+        }
+        return await response.json();
     } catch (error) {
         console.error('Error retrieving file hash:', error);
         throw error;
@@ -19,20 +24,28 @@ const importFiles = async (files) => {
     }
 
     try {
-        const response = await axios.post(`${FILE_URL}/transactionImport`, formData);
-        return response.data;
+        const response = await fetch(`${FILE_URL}/transactionImport`, {
+            method: 'POST',
+            body: formData
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
     } catch (error) {
         console.error('Error importing files:', error);
-        if (error.response) {
-            console.log('Server response:', error.response.data);
-        }
         throw error;
     }
 };
 
 const deleteFileByHash = async (hash) => {
     try {
-        await axios.delete(`${FILE_URL}/delete/${hash}`);
+        const response = await fetch(`${FILE_URL}/delete/${hash}`, {
+            method: 'DELETE'
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
     } catch (error) {
         console.error('Error deleting file:', error);
         throw error;

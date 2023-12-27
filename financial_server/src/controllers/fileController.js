@@ -9,7 +9,7 @@ const generateHash = (fileContent) => {
 // Function to get files based on a hash
 const getFile = async (hash) => {
     try {
-        return await File.find({ fileHash: hash });
+        return await File.findOne({ where: { fileHash: hash } });
     } catch (error) {
         throw new Error('Error fetching files: ' + error.message);
     }
@@ -19,8 +19,14 @@ const getFile = async (hash) => {
 const importFile = async (fileData) => {
     try {
         const fileHash = generateHash(fileData.content);
-        fileData.fileHash = fileHash;
+        const existingFile = await File.findOne({ where: { fileHash: fileHash } });
 
+        if (existingFile) {
+            // Handle the case where the file already exists
+            throw new Error('File already exists with this hash.');
+        }
+
+        fileData.fileHash = fileHash;
         const file = new File(fileData);
         await file.save();
         return file;
@@ -32,7 +38,7 @@ const importFile = async (fileData) => {
 // Function to delete a file based on a hash
 const deleteFile = async (hash) => {
     try {
-        const result = await File.deleteOne({ fileHash: hash });
+        const result = await File.destroy({ where: { fileHash: hash } });
         return result;
     } catch (error) {
         throw new Error('Error deleting file: ' + error.message);
