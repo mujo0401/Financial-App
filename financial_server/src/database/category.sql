@@ -1,0 +1,4 @@
+CREATE TABLE dbo.Categories (
+    id INT PRIMARY KEY IDENTITY,
+    name VARCHAR(255) NOT NULL
+);

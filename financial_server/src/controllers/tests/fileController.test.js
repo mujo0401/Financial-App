@@ -1,4 +1,4 @@
-import { generateHash, getFile, importFile, deleteFile } from '../controllers/fileController.js'; // Replace with your actual file path
+import { generateHash, getFile, importFile, deleteFile } from '../fileController.js'; // Replace with your actual file path
 import File from '../models/fileModel';
 import crypto from 'crypto';
 

@@ -1,12 +1,15 @@
-import axios from 'axios';
-
 const DESC_URL = 'http://localhost:3000/api/descriptions'; 
 
 
      const getDescriptions = async () => {
       try {
-        const response = await fetch(DESC_URL);
-        return response.data;
+        const response = await fetch(DESC_URL, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        });
+        return await response.json();
       } catch (error) {
         console.error('Error fetching descriptions:', error);
         if (error.response) {
@@ -25,8 +28,14 @@ const DESC_URL = 'http://localhost:3000/api/descriptions';
 
      const addDescription = async (descriptionName) => {
       try {
-          const response = await axios.post(DESC_URL, { name: descriptionName });
-          return response.data; 
+          const response = await fetch(DESC_URL, { 
+          name: descriptionName,
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        });
+        return await response.json();
       } catch (error) {
           console.error('Error adding description:', error);
           throw error; 

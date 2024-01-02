@@ -1,15 +1,17 @@
 import express from 'express';
 import cors from 'cors';
-
 import { fileURLToPath } from 'url';
 import path from 'path';
 import morgan from 'morgan';
+import healthRoute from './routes/healthRoute.js';
 import testConnection from './services/testConnection.js';
 import transactionRoute from './routes/transactionRoute.js';
 import categoryRoute from './routes/categoryRoute.js'; 
 import descriptionRoute from './routes/descriptionRoute.js'; 
 import transactionImportRoute from './routes/transactionImportRoute.js';
 import dashboardRoute from './routes/dashboardRoute.js';
+import mappingRoute from './routes/mappingRoute.js';
+
 
 const server = express();
 
@@ -22,53 +24,62 @@ server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 3000;
+const PING_INTERVAL = 1000 * 60 * 5 
 
 const connectDB = async () => {
   try {
     await testConnection();
+    console.log('Connection to the database has been established successfully.');
     server.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+      console.log(`Server has connected to port ${PORT}`);
     });
-  } catch (err) {
-    console.error(`Could not connect to SQL Server: ${err}`);
-  }
-};
 
-connectDB();
+    setInterval(async () => {
+      try {
+        await testConnection();
+      } catch (error) {
+        console.error('Periodic health check failed:', error);
+      }
+    }, PING_INTERVAL);
 
-const connectionStatus = async () => {
-  let status = 'OK';
-  try {
-    await testConnection(); // Test the database connection
   } catch (error) {
-    console.error('Database connection failed:', error);
-    status = 'Database connection failed';
+    console.error(`Could not connect to SQL Server: ${error}`);
+    process.exit(1);
   }
-  return status;
 };
 
-// Modify the health route to use connectionStatus for on-demand checks
 server.get('/api/health', async (req, res) => {
-  const dbStatus = await connectionStatus();
-  if (dbStatus === 'OK') {
-    res.send('API and Database are healthy');
-  } else {
-    res.status(500).send(dbStatus); // Send the error status
+  try {
+    await testConnection(); 
+    res.send('OK'); 
+  } catch (error) {
+    console.error('Health check endpoint encountered an error:', error);
+    res.status(500).send('Service Unavailable'); 
   }
 });
 
-// Periodically check the health and log the status
-const PING_INTERVAL = 1000 * 30; // every 30 seconds
-setInterval(async () => {
-  const status = await connectionStatus();
-  if (status !== 'OK') {
-    console.error('Health check failed:', status);
-  } else {
-  }
-}, PING_INTERVAL);
+connectDB();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Static file serving
+server.use(express.static(path.join(__dirname, 'public'))); 
+
+// API routes
+server.use('/api/dashboard', dashboardRoute);
+server.use('/api/mapping', mappingRoute);
+server.use('/api/categories', categoryRoute);
+server.use('/api/descriptions', descriptionRoute);
+server.use('/api/transactions', transactionRoute);
+server.use('/api/files', transactionImportRoute); 
+server.use('/api/health', healthRoute);
+
+// Error handling middleware
+server.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
 
 // React server routing for frontend
 server.get('/*', (req, res) => {

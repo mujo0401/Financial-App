@@ -1,9 +1,9 @@
-const CAT_URL = 'http://localhost:3000/api/categories'; 
+const MAPPING_URL = 'http://localhost:3000/api/categories'; 
 
-const categoryService = {
-  getCategories: async () => {
+const mappingService = {
+    getCategoryFromDescription: async () => {
     try {
-      const response = await fetch(CAT_URL, {
+      const response = await fetch(MAPPING_URL, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -11,7 +11,7 @@ const categoryService = {
       });
       return await response.json();
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error('Error fetching mappings:', error);
       if (error.response) {
         console.error('Error Data:', error.response.data);
         console.error('Error Status:', error.response.status);
@@ -27,4 +27,4 @@ const categoryService = {
   }
 };
 
-export default categoryService;
+export default mappingService;

@@ -1,7 +1,7 @@
 // fileRoute.js
 import express from 'express';
 import multer from 'multer';
-import { getFile, importFile, deleteFile, generateHash } from '../controllers/fileController.js';
+import fileController from '../controllers/fileController.js';
 
 const router = express.Router();
 
@@ -24,7 +24,7 @@ router.post('/transactionImport', multerimport.array('files', 10), async (req, r
             return res.status(400).send('No file uploaded.');
         }
 
-        const fileHash = generateHash(req.file.path);
+        const fileHash = generateFileHash(req.file.path);
 
         const fileData = {
             fileName: req.file.originalname,
@@ -37,7 +37,7 @@ router.post('/transactionImport', multerimport.array('files', 10), async (req, r
             fileHash: fileHash
         };
 
-        const savedFile = await importFile(fileData);
+        const savedFile = await fileController.importFile(fileData);
         res.status(201).json(savedFile);
     } catch (error) {
         res.status(500).json({ error: error.message });

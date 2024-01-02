@@ -1,6 +1,6 @@
 // Import dependencies
 import Description from '../models/descriptionModel';
-import descriptionController from '../controllers/descriptionController.js'; 
+import descriptionController from '../descriptionController.js'; 
 
 
 // Mock Category model
@@ -25,7 +25,7 @@ describe('getDescriptions', () => {
 
   it('should return descriptions successfully', async () => {
     // Mock data
-    const mockDescriptions = [{ id: 1, name: 'HONDA PMT' }, { id: 2, name: 'OLDREPUBLICTTLPAYROLL' }];
+    const mockDescriptions = { descriptionId: 2, name: 'ATT' };
     Description.findAll.mockResolvedValue(mockDescriptions);
 
     // Call the function

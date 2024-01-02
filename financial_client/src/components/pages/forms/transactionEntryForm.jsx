@@ -7,14 +7,14 @@ import transactionEntryService from 'components/services/transactionEntryService
 const TransactionEntryForm = () => {
   const [categories, setCategories] = useState([]);
   const [descriptions, setDescriptions] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedDescription, setSelectedDescription] = useState('');
+  const [categoryKeywords, setCategoryKeywords] = useState({});
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [filteredDescriptions, setFilteredDescriptions] = useState([]);
   const [transaction, setTransaction] = useState({ amount: '', date: '' });
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
 
   useEffect(() => {
-    // Fetch the real data
     const fetchData = async () => {
       try {
         const fetchedCategories = await categoryService.getCategories();
@@ -28,32 +28,27 @@ const TransactionEntryForm = () => {
     fetchData();
   }, []);
 
+  const handleCategoryClick = (category) => {
+    setSelectedCategories(prev => [...prev, category]);
+    // Filter descriptions based on selected categories
+    const descriptions = categories.reduce((acc, cat) => {
+        if (selectedCategories.includes(cat)) {
+            return acc.concat(categoryKeywords[cat]);
+        }
+        return acc;
+    }, []);
+    setFilteredDescriptions(descriptions);
+  };
+
   const handleChange = (e) => {
     setTransaction({ ...transaction, [e.target.name]: e.target.value });
   };
 
-  const handleCategoryChange = (e) => {
-    setSelectedCategory(e.target.value);
-  };
-
-  const handleDescriptionChange = (e) => {
-    setSelectedDescription(e.target.value);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const category = categories.find(cat => cat.name === selectedCategory);
-    const description = descriptions.find(desc => desc.name === selectedDescription);
-
-    if (!category || !description) {
-      setMessage('Category or description not selected.');
-      setMessageType('error');
-      return;
-    }
-
     const transactionData = {
-      categoryId: category._id, // Changed from 'id' to '_id'
-      descriptionId: description._id, // Changed from 'id' to '_id'
+      categories: selectedCategories,
+      descriptions: filteredDescriptions,
       amount: transaction.amount,
       date: transaction.date,
     };
@@ -69,7 +64,7 @@ const TransactionEntryForm = () => {
       setMessageType('error');
     }
   };
-  
+
   return (
     <form onSubmit={handleSubmit}>
       <Label htmlFor="date">Select Date</Label>
@@ -80,33 +75,26 @@ const TransactionEntryForm = () => {
         onChange={handleChange}
         required
       />
-            <Label htmlFor="categoryName">Category</Label>
-      <Input 
-        list="categoryOptions" 
-        name="categoryName" 
-        value={selectedCategory} 
-        onChange={handleCategoryChange} 
-        required 
-      />
-       <datalist id="categoryOptions">
-       {Array.isArray(categories) && categories.map((category) => (
-  <option key={category._id} value={category.name} />
-        ))}
-      </datalist>
 
-      <Label htmlFor="descriptionName">Description</Label>
-      <Input 
-        list="descriptionOptions" 
-        name="descriptionName" 
-        value={selectedDescription} 
-        onChange={handleDescriptionChange} 
-        required 
-      />
-     <datalist id="descriptionOptions">
-       {Array.isArray(descriptions) && descriptions.map((description) => (
-          <option key={description._id} value={description.name} />
+      <div className="categories-grid">
+        <Label>Categories</Label>
+        {categories.map(category => (
+          <Button 
+            key={category} 
+            onClick={() => handleCategoryClick(category)} 
+            className={selectedCategories.includes(category) ? 'selected' : ''}
+          >
+            {category}
+          </Button>
         ))}
-      </datalist>
+      </div>
+
+      <div className="descriptions-grid">
+        <Label>Descriptions</Label>
+        {filteredDescriptions.map(description => (
+          <div key={description}>{description}</div>
+        ))}
+      </div>
 
       <Label htmlFor="amount">Amount</Label>
       <Input
@@ -116,8 +104,8 @@ const TransactionEntryForm = () => {
         onChange={handleChange}
         required
       />
- {/* Message display */}
- {message && (
+
+      {message && (
         <div style={{ color: messageType === 'error' ? 'red' : 'green' }}>
           {message}
         </div>

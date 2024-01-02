@@ -3,6 +3,7 @@ const TRANSACTION_URL = 'http://localhost:3000/api/transactions';
 const transactionEntryService = {
   addTransaction: async (transactionData) => {
     try {
+      console.log(transactionData)
       const response = await fetch(TRANSACTION_URL, {
         method: 'POST',
         headers: {

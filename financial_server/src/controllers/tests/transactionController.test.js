@@ -1,4 +1,4 @@
-import { addTransaction } from '../controllers/transactionController.js';
+import { addTransaction } from '../transactionController.js';
 import Category from '../models/categoryModel.js';
 import Description from '../models/descriptionModel.js';
 import Transaction from '../models/transactionModel.js';
@@ -27,10 +27,10 @@ describe('addTransaction', () => {
     // Arrange
     const req = {
       body: {
-        categoryId: 1, // existing ID
-        descriptionId: 1, // existing ID
+        categoryId: 1, 
+        descriptionId: 1, 
         amount: 100.00,
-        date: new Date(),
+        date: '2023-12-18'
       },
     };
     const res = {
@@ -40,10 +40,10 @@ describe('addTransaction', () => {
     };
 
     // Mock the findByPk method to simulate found category and description
-    Category.findByPk.mockResolvedValue({ id: 1, name: 'Vehicle' });
-    Description.findByPk.mockResolvedValue({ id: 1, name: 'HONDA PMT' });
+    Category.findByPk.mockResolvedValue({ categoryId: 1, name: 'Phone' });
+    Description.findByPk.mockResolvedValue({ cdescriptionId: 1, name: 'ATT' });
     Transaction.create.mockResolvedValue({
-      id: 1,
+      transactionDetailId: 1,
       categoryId: req.body.categoryId,
       descriptionId: req.body.descriptionId,
       amount: req.body.amount,

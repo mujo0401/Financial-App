@@ -1,11 +1,9 @@
 import { Sequelize } from 'sequelize';
-
 import tedious from 'tedious';
 
 const database = 'financedb';
 const user = 'sa';
 const password = 'password'; 
-
 
 const connect = new Sequelize(database, user, password, {
   host: 'localhost', 
@@ -18,6 +16,10 @@ const connect = new Sequelize(database, user, password, {
       integratedSecurity: true, 
     },
     instanceName: 'SQLEXPRESS01',
+    dialectOptions: {
+      useUTC: true, 
+    },
+    timezone: '+00:00'
   },
 });
 

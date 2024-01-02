@@ -1,5 +1,5 @@
 // Import dependencies
-import categoryController from '../controllers/categoryController.js'; 
+import categoryController from '../categoryController.js'; 
 
 
 // Mock Category model
@@ -29,7 +29,7 @@ describe('getCategories', () => {
 
   it('should return categories successfully', async () => {
     // Mock data
-    const mockCategories = [{ id: 1, name: 'Vehicle' }, { id: 2, name: 'Income' }];
+    const mockCategories = { categoryId: 1, name: 'Phone' };
     Category.findAll.mockResolvedValue(mockCategories);
 
     // Call the function
