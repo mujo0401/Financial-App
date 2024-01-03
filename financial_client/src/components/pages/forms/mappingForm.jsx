@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import mappingService from 'components/services/mappingService'; 
 
-const CategoryMapping = () => {
+const MappingForm = () => {
   const [categoryMappings, setCategoryMappings] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -8,11 +9,7 @@ const CategoryMapping = () => {
   useEffect(() => {
     const fetchCategoryMappings = async () => {
       try {
-        const response = await fetch('/api/categoryMappings');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
+        const data = await mappingService.fetchCategoryMappings(); 
         setCategoryMappings(data);
       } catch (error) {
         setError(error.message);
@@ -46,4 +43,4 @@ const CategoryMapping = () => {
   );
 };
 
-export default CategoryMapping;
+export default MappingForm;

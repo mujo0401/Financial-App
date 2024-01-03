@@ -1,5 +1,5 @@
 import React from 'react';
-import TransactionForm from 'components/pages/forms/transactionEntryForm';
+import TransactionEntryForm from 'components/pages/forms/transactionEntryForm';
 import { Container } from '@mui/material';
 import ErrorBoundary from 'components/errorHandling/errorBoundary';
 
@@ -11,7 +11,7 @@ const TransactionEntry = () => {
     <Container>
     <div>
       <h1>Single Transaction Entries</h1>
-      <TransactionForm />
+      <TransactionEntryForm />
     </div>
     </Container>
     </ ErrorBoundary>

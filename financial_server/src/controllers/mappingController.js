@@ -3,7 +3,7 @@ const mappingController = {
     const mapping = {
       "Medical": ["MAYO CLINIC", "North Memorial", "Park Nicollet", "Amazon Pharmacy"],
       "Phone": ["ATT"],
-      "Streaming Services": ["FULGAZ", "PRIME VIDEO", "YOUTUBEPREMIUM", "ESPN PLUS", "NETFLIX.COM", "NINTENDO", "Strava", "SLING.COM", "CHATGPT"],
+      "Streaming Services": ["FULGAZ", "PRIME VIDEO", "YOUTUBEPREMIUM", "ESPN PLUS", "NETFLIX", "NINTENDO", "Strava", "SLING", "CHATGPT"],
       "Software Subscriptions": ["MICROSOFT 36", "GITHUB", "GODADDY.COM"],
       "Groceries": ["CUB FOODS", "LUNDS&BYERLYS", "WALMART"],
       "Internet": ["COMBAST CABLE"],

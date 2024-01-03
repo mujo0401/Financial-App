@@ -1,48 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Label, Input, Button } from 'components/assets/localStyle';
-import categoryService from 'components/services/categoryService'; 
-import descriptionService from 'components/services/descriptionService'; 
+import React, { useState } from 'react';
+import { Button } from 'components/assets/localStyle';
+import DateForm from 'components/pages/forms/dateForm';
+import CategoryForm from 'components/pages/forms/categoryForm';
+import DescriptionForm from 'components/pages/forms/descriptionForm';
+import AmountForm from 'components/pages/forms/amountForm';
 import transactionEntryService from 'components/services/transactionEntryService';
 
 const TransactionEntryForm = () => {
-  const [categories, setCategories] = useState([]);
-  const [descriptions, setDescriptions] = useState([]);
-  const [categoryKeywords, setCategoryKeywords] = useState({});
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [filteredDescriptions, setFilteredDescriptions] = useState([]);
-  const [transaction, setTransaction] = useState({ amount: '', date: '' });
+  const [selectedCategories] = useState([]);
+  const [filteredDescriptions] = useState([]);
+  const [transaction] = useState({ amount: '', date: '' });
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedCategories = await categoryService.getCategories();
-        const fetchedDescriptions = await descriptionService.getDescriptions();
-        setCategories(fetchedCategories);
-        setDescriptions(fetchedDescriptions);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const handleCategoryClick = (category) => {
-    setSelectedCategories(prev => [...prev, category]);
-    // Filter descriptions based on selected categories
-    const descriptions = categories.reduce((acc, cat) => {
-        if (selectedCategories.includes(cat)) {
-            return acc.concat(categoryKeywords[cat]);
-        }
-        return acc;
-    }, []);
-    setFilteredDescriptions(descriptions);
-  };
-
-  const handleChange = (e) => {
-    setTransaction({ ...transaction, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,44 +36,10 @@ const TransactionEntryForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Label htmlFor="date">Select Date</Label>
-      <Input
-        type="date"
-        name="date"
-        value={transaction.date}
-        onChange={handleChange}
-        required
-      />
-
-      <div className="categories-grid">
-        <Label>Categories</Label>
-        {categories.map(category => (
-          <Button 
-            key={category} 
-            onClick={() => handleCategoryClick(category)} 
-            className={selectedCategories.includes(category) ? 'selected' : ''}
-          >
-            {category}
-          </Button>
-        ))}
-      </div>
-
-      <div className="descriptions-grid">
-        <Label>Descriptions</Label>
-        {filteredDescriptions.map(description => (
-          <div key={description}>{description}</div>
-        ))}
-      </div>
-
-      <Label htmlFor="amount">Amount</Label>
-      <Input
-        type="number"
-        name="amount"
-        value={transaction.amount}
-        onChange={handleChange}
-        required
-      />
-
+    <DateForm />
+    <CategoryForm />
+    <DescriptionForm />
+    <AmountForm />
       {message && (
         <div style={{ color: messageType === 'error' ? 'red' : 'green' }}>
           {message}
