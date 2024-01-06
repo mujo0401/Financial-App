@@ -1,4 +1,4 @@
-const MAPPING_URL = 'http://localhost:3000/api/categories'; 
+const MAPPING_URL = 'http://localhost:3000/api/mapping'; 
 
 const mappingService = {
     getCategoryFromDescription: async () => {

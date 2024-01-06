@@ -1,4 +1,4 @@
-import connect from "../services/connectionService.js";
+import sequelize from "../services/connectionService.js";
 import crypto from 'crypto';
 
 const fileController = {
@@ -8,7 +8,7 @@ const fileController = {
 
     getFile: async (hash) => {
         try {
-            const [files] = await connect.query('EXEC sp_GetFileByHash @fileHash = :hash', {
+            const [files] = await sequelize.query('EXEC sp_GetFileByHash @fileHash = :hash', {
                 replacements: { hash },
                 type: sequelize.QueryTypes.SELECT
             });
@@ -27,7 +27,7 @@ const fileController = {
             fileData.fileHash = fileHash;
 
             // Call the stored procedure to import the file
-            await connect.query('EXEC sp_ImportFile @filename = :filename, @filesize = :filesize, @importdate = :importdate, @fileHash = :fileHash, @mediatype = :mediatype, @encoding = :encoding, @path = :path, @isprocessed = :isprocessed', {
+            await sequelize.query('EXEC sp_ImportFile @filename = :filename, @filesize = :filesize, @importdate = :importdate, @fileHash = :fileHash, @mediatype = :mediatype, @encoding = :encoding, @path = :path, @isprocessed = :isprocessed', {
                 replacements: fileData
             });
 
@@ -39,7 +39,7 @@ const fileController = {
 
     deleteFile: async (hash) => {
         try {
-            await connect.query('EXEC sp_DeleteFileByHash @fileHash = :hash', {
+            await sequelize.query('EXEC sp_DeleteFileByHash @fileHash = :hash', {
                 replacements: { hash }
             });
             // You can return the result or a confirmation message

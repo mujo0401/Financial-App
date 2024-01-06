@@ -1,4 +1,4 @@
-import connect from '../services/connectionService.js';
+import sequelize from '../services/connectionService.js';
 import parsingController from './parsingController.js';
 
 const transactionImportController = {
@@ -16,7 +16,7 @@ const transactionImportController = {
             const records = JSON.parse(file.buffer.toString());
             for (const record of records) {
                 // Call the stored procedure for each record
-                await connect.query('EXEC sp_InsertTransaction @field1 = :field1, @field2 = :field2, ...', {
+                await sequelize.query('EXEC sp_InsertTransaction @field1 = :field1, @field2 = :field2, ...', {
                     replacements: record
                 });
             }

@@ -1,9 +1,10 @@
-import connect from "../services/connectionService.js";
+import sequelize from "../services/connectionService.js";
 
 const CategoryController = {
     getCategories: async (req, res) => {
         try {
-            const [categories] = await connect.query('EXEC sp_GetAllCategories');
+            // Call the combined stored procedure without a category ID
+            const [categories] = await sequelize.query('EXEC sp_GetCategories');
             res.json(categories);
         } catch (error) {
             console.error("Error fetching categories:", error);
@@ -11,30 +12,19 @@ const CategoryController = {
         }
     },
 
-    getCategoryById: async (categoryId) => {
+    getCategoryById: async (categoryId, res) => {
+
         try {
-            const [category] = await connect.query('EXEC sp_GetCategoryById @categoryId = :categoryId', {
-                replacements: { categoryId },
-                type: connect.QueryTypes.SELECT
+            // Call the combined stored procedure with a category ID
+            const [category] = await sequelize.query(`EXEC sp_GetCategories @categoryId = categoryId`, {
+                replacements: { categoryId: categoryId  },
+                type: sequelize.QueryTypes.SELECT
             });
-            return category;
+            res.json(category);
         } catch (error) {
-            console.error("Error fetching category:", error);
-            throw error;
+            console.error("Error fetching category by ID:", error);
+            res.status(500).json({ error: 'Error fetching category by ID' });
         }
-    },
-
-    categoryExists: async (categoryId) => {
-        const category = await CategoryController.getCategoryById(categoryId);
-
-        if (!category) {
-            return { 
-                isValid: false, 
-                message: 'Category not found'
-            };
-        }
-
-        return { isValid: true };
     },
 };
 

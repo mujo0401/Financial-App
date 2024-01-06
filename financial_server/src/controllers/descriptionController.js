@@ -1,9 +1,9 @@
-import connect from "../services/connectionService.js";
+import sequelize from "../services/connectionService.js";
 
 const DescriptionController = {
     getDescriptions: async (req, res) => {
         try {
-            const [descriptions] = await connect.query('EXEC sp_GetAllDescriptions');
+            const [descriptions] = await sequelize.query('EXEC sp_GetDescriptions');
             res.json(descriptions);
         } catch (error) {
             console.error("Error fetching descriptions:", error);
@@ -11,16 +11,15 @@ const DescriptionController = {
         }
     },
 
-    getDescriptionById: async (descriptionId) => {
+    getDescriptionById: async (descriptionId, res) => {
         try {
-            const [description] = await connect.query('EXEC sp_GetDescriptionById @descriptionId = :descriptionId', {
-                replacements: { descriptionId },
-                type: connect.QueryTypes.SELECT
+            const [description] = await sequelize.query(`EXEC sp_GetDescriptions @descriptionId = ${descriptionId}`, {
+                type: sequelize.QueryTypes.SELECT
             });
-            return description;
+            res.json(description);
         } catch (error) {
             console.error("Error fetching description:", error);
-            throw error;
+            res.status(500).json({ error: 'Error fetching description' });
         }
     },
 

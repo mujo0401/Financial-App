@@ -1,5 +1,5 @@
 import xlsx from 'xlsx';
-import connect from "../services/connectionService.js";
+import sequelize from "../services/connectionService.js";
 import mappingController from './mappingController.js';
 import categoryController from './categoryController.js';
 import descriptionController from './descriptionController.js';
@@ -29,7 +29,7 @@ const parsingController = {
         const descriptionId = await descriptionController.getDescriptionId(description);
         const parsedDate = parseDate(transDate); 
 
-        await connect.query('EXEC sp_addTransaction @categoryId = :categoryId, @descriptionId = :descriptionId, @amount = :amount, @date = :date', {
+        await sequelize.query('EXEC sp_addTransaction @categoryId = :categoryId, @descriptionId = :descriptionId, @amount = :amount, @date = :date', {
           replacements: { categoryId, descriptionId, amount: parseFloat(amount), date: parsedDate }
         });
       }

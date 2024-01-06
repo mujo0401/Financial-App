@@ -5,7 +5,7 @@ const database = 'financedb';
 const user = 'sa';
 const password = 'password'; 
 
-const connect = new Sequelize(database, user, password, {
+const sequelize = new Sequelize(database, user, password, {
   host: 'localhost', 
   dialect: 'mssql',
   logging: console.log,
@@ -23,4 +23,4 @@ const connect = new Sequelize(database, user, password, {
   },
 });
 
-export default connect;
+export default sequelize;

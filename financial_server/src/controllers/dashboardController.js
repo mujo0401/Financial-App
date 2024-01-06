@@ -1,10 +1,10 @@
-import connect from "../services/connectionService.js";
+import sequelize from "../services/connectionService.js";
 
 const dashboardController = {
     // Spending over time
     getSpendingOverTime: async (startDate, endDate) => {
         try {
-            const [results] = await connect.query('EXEC sp_GetSpendingOverTime @startDate = :startDate, @endDate = :endDate', {
+            const [results] = await sequelize.query('EXEC sp_GetSpendingOverTime @startDate = :startDate, @endDate = :endDate', {
                 replacements: { startDate, endDate },
                 type: sequelize.QueryTypes.SELECT
             });
@@ -17,7 +17,7 @@ const dashboardController = {
 
     getMonthlyIncomeVsExpense: async (startDate, endDate) => {
         try {
-            const [results] = await connect.query('EXEC sp_GetMonthlyIncomeVsExpense @startDate = :startDate, @endDate = :endDate', {
+            const [results] = await sequelize.query('EXEC sp_GetMonthlyIncomeVsExpense @startDate = :startDate, @endDate = :endDate', {
                 replacements: { startDate, endDate },
                 type: sequelize.QueryTypes.SELECT
             });

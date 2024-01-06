@@ -1,7 +1,7 @@
-import connect from "../services/connectionService.js";
+import sequelize from "../services/connectionService.js";
 
 const testConnection = async () => {
-    await connect.authenticate();
+    await sequelize.authenticate();
     console.log('Completed secure connection to SQL Server');
   } 
   
