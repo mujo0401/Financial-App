@@ -1,5 +1,6 @@
 import sequelize from '../services/connectionService.js';
 import parsingController from './parsingController.js';
+import transactionController from './transactionController.js';
 
 const transactionImportController = {
   importData: async (file) => {
@@ -15,17 +16,18 @@ const transactionImportController = {
             // Handle JSON file
             const records = JSON.parse(file.buffer.toString());
             for (const record of records) {
-                // Call the stored procedure for each record
-                await sequelize.query('EXEC sp_InsertTransaction @field1 = :field1, @field2 = :field2, ...', {
-                    replacements: record
-                });
+                try {
+                  const result = await transactionController.addTransaction(record);
+                  console.log(result.message); 
+                } catch (error) {
+                  console.error('Error adding transaction:', error);
+                }
             }
         } else {
             throw new Error('Unsupported file type');
         }
-        return 'File processed successfully';
     } catch (error) {
-        throw new Error('Error processing file: ' + error.message);
+        console.error('Error processing file:', error);
     }
   }
 };

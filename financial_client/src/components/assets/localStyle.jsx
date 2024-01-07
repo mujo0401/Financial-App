@@ -47,6 +47,16 @@ export const Button = styled('button')(({ theme }) => ({
   },
 }));
 
+export const TransactionWidget = styled('div')(({ theme }) => ({
+  position: 'fixed',
+  bottom: '20px',
+  right: '20px',
+  backgroundColor: '#d5f2eb',
+  padding: '15px',
+  boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.5)',
+  zIndex: 1000, // Ensure it's above other content
+}));
+
 export const iconStyle = {
   display: 'inline-block',
   margin: '0px',

@@ -25,9 +25,9 @@ const parsingController = {
       // Assume getCategoryFromDescription, getCategoryId, getDescriptionId are defined
       const categoryName = mappingController.getCategoryFromDescription(description);
       if (categoryName) {
-        const categoryId = await categoryController.getCategoryId(categoryName);
-        const descriptionId = await descriptionController.getDescriptionId(description);
-        const parsedDate = parseDate(transDate); 
+        const categoryId = await categoryController.getCategories(categoryName);
+        const descriptionId = await descriptionController.getDescriptions(description);
+        const parsedDate = parsedDate(transDate); 
 
         await sequelize.query('EXEC sp_addTransaction @categoryId = :categoryId, @descriptionId = :descriptionId, @amount = :amount, @date = :date', {
           replacements: { categoryId, descriptionId, amount: parseFloat(amount), date: parsedDate }

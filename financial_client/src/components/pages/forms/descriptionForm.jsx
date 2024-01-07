@@ -3,43 +3,40 @@ import { iconStyle } from 'components/assets/localStyle';
 import descriptionService from 'components/services/descriptionService'; 
 import mappingService from 'components/services/mappingService';
 
-const DescriptionForm = ({ onDescriptionChange, selectedCategory }) => {
+const DescriptionForm = ({ onDescriptionChange, selectedCategoryName }) => {
   const [descriptions, setDescriptions] = useState([]);
-  const [selectedDescription, setSelectedDescription] = useState(null);
+  const [selectedDescriptionId, setSelectedDescriptionId] = useState(null);
   const [categoryToDescriptionMap, setCategoryToDescriptionMap] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       const fetchedDescriptions = await descriptionService.getDescriptions();
-      const mappingData = await mappingService.getCategoryFromDescription();
-      if (Array.isArray(fetchedDescriptions)) {
-        setDescriptions(fetchedDescriptions);
-      } else {
-        console.error('fetchedDescriptions is not an array:', fetchedDescriptions);
-        setDescriptions([]);
-      }
-      setCategoryToDescriptionMap(mappingData);
+      const mappingData = await mappingService.getCategoryFromDescription(); // Fetch mapping data
+      setDescriptions(fetchedDescriptions);
+      setCategoryToDescriptionMap(mappingData); // Set the mapping data
     };
   
     fetchData();
   }, []);
 
-  const filteredDescriptions = selectedCategory 
-    ? descriptions.filter(desc => categoryToDescriptionMap[selectedCategory]?.includes(desc.name))
+  const filteredDescriptions = selectedCategoryName 
+    ? descriptions.filter(desc => {
+        const keywords = categoryToDescriptionMap[selectedCategoryName] || [];
+        return keywords.some(keyword => desc.name.includes(keyword));
+      })
     : descriptions;
 
-    const handleDescriptionClick = (description) => {
-      const isSameDescription = selectedDescription === description.name;
-      setSelectedDescription(isSameDescription ? null : description.name);
-    
-      if (typeof onDescriptionChange === 'function') {
-        onDescriptionChange(isSameDescription ? '' : description.name);
-      }
-    };
-    
+  const handleDescriptionClick = (description) => {
+    const isSameDescription = selectedDescriptionId === description.id;
+    setSelectedDescriptionId(isSameDescription ? null : description.id);
+  
+    if (typeof onDescriptionChange === 'function') {
+      onDescriptionChange(isSameDescription ? '' : description.id); 
+    }
+  };
 
-  const getDescriptionStyle = (descriptionName) => {
-    if (selectedDescription === descriptionName) {
+  const getDescriptionStyle = (descriptionId) => {
+    if (selectedDescriptionId === descriptionId) {
       return { ...iconStyle, backgroundColor: 'lightblue' }; 
     }
     return iconStyle;
@@ -51,7 +48,7 @@ const DescriptionForm = ({ onDescriptionChange, selectedCategory }) => {
         <h2>Transaction Descriptions</h2> 
       {filteredDescriptions.map(description => (
         <div key={description.id} 
-             style={getDescriptionStyle(description.name)}
+             style={getDescriptionStyle(description.id)} // Use ID for style
              onClick={() => handleDescriptionClick(description)}>
           {description.name}
         </div>

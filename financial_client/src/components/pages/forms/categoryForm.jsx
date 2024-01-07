@@ -4,7 +4,7 @@ import categoryService from 'components/services/categoryService';
 
 const CategoryForm = ({ onCategoryChange }) => {
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -16,13 +16,13 @@ const CategoryForm = ({ onCategoryChange }) => {
   }, []);
 
   const handleCategoryClick = (category) => {
-    const isSameCategory = selectedCategory === category.name;
-    setSelectedCategory(isSameCategory ? null : category.name);
-    onCategoryChange(isSameCategory ? null : category.name); 
+    const isSameCategory = selectedCategoryId === category.id;
+    setSelectedCategoryId(isSameCategory ? null : category.id);
+    onCategoryChange(isSameCategory ? null : category.id); 
   };
 
-  const getCategoryStyle = (categoryName) => {
-    if (selectedCategory === categoryName) {
+  const getCategoryStyle = (categoryId) => {
+    if (selectedCategoryId === categoryId) {
       return { ...iconStyle, backgroundColor: 'lightblue' }; 
     }
     return iconStyle;
@@ -34,7 +34,7 @@ const CategoryForm = ({ onCategoryChange }) => {
         <h2>Transaction Buckets</h2>
         {categories.map((category) => (
           <div key={category.id} 
-               style={getCategoryStyle(category.name)} 
+               style={getCategoryStyle(category.id)} 
                onClick={() => handleCategoryClick(category)}>
             {category.name}
           </div>

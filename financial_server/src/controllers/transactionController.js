@@ -1,8 +1,8 @@
 import sequelize from '../services/connectionService.js';
 
 const transactionController = {
-  formatDate: (date) => {
-    const d = new Date(date);
+  formatDate: () => {
+    const d = new Date();
     d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
     let month = '' + (d.getUTCMonth() + 1);
     let day = '' + d.getUTCDate();
@@ -17,23 +17,31 @@ const transactionController = {
   },
 
   addTransaction: async (transactionData) => {
-    const { categoryId, descriptionId, amount, date } = transactionData;
-    const formattedDate = transactionController.formatDate(date);
-
+    let { categoryId, descriptionId, amount } = transactionData;
+    categoryId = isNaN(parseInt(categoryId)) ? null : parseInt(categoryId);
+    descriptionId = isNaN(parseInt(descriptionId)) ? null : parseInt(descriptionId);
+    amount = isNaN(parseFloat(amount)) ? null : parseFloat(amount);
+    const formattedDate = transactionController.formatDate();
+  
     try {
-        const [result] = await sequelize.query('EXEC sp_AddTransaction @categoryId = categoryId, @descriptionId = descriptionId, @amount = amount, @date = formattedDate', {
-            replacements: { categoryId, descriptionId, amount, formattedDate },
-            type: sequelize.QueryTypes.SELECT
-        });
-
-        const newTransactionId = result && result[0] && result[0].NewTransactionId;
-        if (!newTransactionId) {
-            throw new Error('Failed to create a new transaction');
-        }
-
-        res.status(200).send({ message: 'Transaction added successfully', categoryId: newTransactionId });
+      const [result] = await sequelize.query("EXEC sp_AddTransaction @categoryId = :categoryId, @descriptionId = :descriptionId, @amount = :amount, @date = :date", {
+        replacements: { categoryId, descriptionId, amount, date: formattedDate },
+        type: sequelize.QueryTypes.RAW 
+      });
+  
+      if (result[0] && result[0][0] && result[0][0].ErrorMessage) {
+        throw new Error(result[0][0].ErrorMessage);
+      }
+  
+      const newTransactionId = result && result[0] && result[0].NewTransactionId;
+      if (!newTransactionId) {
+        throw new Error('Failed to create a new transaction');
+      }
+  
+      return { message: 'Transaction added successfully', categoryId: newTransactionId };
     } catch (error) {
-        console.error('Error in addTransaction function:', error);
+      console.error('Error in addTransaction function:', error);
+      throw error; // Propagate the error up to the caller
     }
   }
 }

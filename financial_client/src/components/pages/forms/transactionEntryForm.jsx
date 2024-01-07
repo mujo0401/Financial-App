@@ -1,56 +1,62 @@
-import React, { useState } from 'react';
-import { Button } from 'components/assets/localStyle';
-import DateForm from 'components/pages/forms/dateForm';
+import React, { useState, useEffect } from 'react';
 import CategoryForm from 'components/pages/forms/categoryForm';
 import DescriptionForm from 'components/pages/forms/descriptionForm';
 import AmountForm from 'components/pages/forms/amountForm';
 import transactionEntryService from 'components/services/transactionEntryService';
-import TransactionTableForm from 'components/pages/forms/transactionTableForm';
+import TransactionPreviewForm from 'components/pages/forms/transactionPreviewForm';
+import categoryService from 'components/services/categoryService';
+import descriptionService from 'components/services/descriptionService';
 
 const TransactionEntryForm = () => {
+
+  const today = new Date().toISOString().split('T')[0];
   // State to hold the entire transaction
   const [currentTransaction, setCurrentTransaction] = useState({
-    category: '',
-    description: '',
+    categoryId: '', 
+    descriptionId: '', 
     amount: '',
-    date: ''
+    date: today
   });
-  const [transactions, setTransactions] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [categories, setCategories] = useState([]); 
+  const [descriptions, setDescriptions] = useState([]); 
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
+  const [selectedCategoryName, setSelectedCategoryName] = useState('');
 
-  const onDescriptionChange = (descriptionName) => {
-    setCurrentTransaction(prev => ({ ...prev, description: descriptionName }));
+  useEffect(() => {
+    const fetchCategoriesAndDescriptions = async () => {
+      const fetchedCategories = await categoryService.getCategories();
+      const fetchedDescriptions = await descriptionService.getDescriptions();
+      setCategories(fetchedCategories);
+      setDescriptions(fetchedDescriptions);
+    };
+
+    fetchCategoriesAndDescriptions();
+  }, []);
+
+  const categoryName = categories.find(c => c.id === currentTransaction.categoryId)?.name;
+  const descriptionName = descriptions.find(d => d.id === currentTransaction.descriptionId)?.name;
+
+  const onDescriptionChange = (descriptionId) => {
+    setCurrentTransaction(prev => ({ ...prev, descriptionId }));
   }
 
   const onAmountChange = (amount) => {
-    setCurrentTransaction(prev => ({ ...prev, amount: amount }));
+    setCurrentTransaction(prev => ({ ...prev, amount }));
   }
-
-  const onDateChange = (date) => {
-    setCurrentTransaction(prev => ({ ...prev, date: date }));
-  }
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    // Create a new transaction object
-    const newTransaction = { ...currentTransaction };
-  
-    // Add the new transaction to the transactions array
-    const updatedTransactions = [...transactions, newTransaction];
-  
     try {
-      // Send the updated transactions array to the service
-      await transactionEntryService.addTransaction(updatedTransactions);
-  
-      // If the service call was successful, update the state
-      setTransactions(updatedTransactions);
-      setCurrentTransaction({ category: '', description: '', amount: '', date: '' });
-  
-      setMessage('Transaction successfully added!');
-      setMessageType('success');
+      const response = await transactionEntryService.addTransaction(currentTransaction);
+      if (response.message) {
+        setMessage(response.message);
+        setMessageType('success');
+      } else {
+        setMessage('Transaction added, but no message received.');
+      }
+      setCurrentTransaction({ categoryId: '', descriptionId: '', amount: '', date: today });
     } catch (error) {
       console.error('Error submitting transaction:', error);
       setMessage('Failed to add transaction.');
@@ -60,25 +66,33 @@ const TransactionEntryForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-     <DateForm onDateChange={onDateChange} />
       <AmountForm onAmountChange={onAmountChange} />
-      <CategoryForm onCategoryChange={(category) => {
-        setSelectedCategory(category);
-        setCurrentTransaction(prev => ({ ...prev, category: category }));
-      }} />
-      <DescriptionForm selectedCategory={selectedCategory} onDescriptionChange={onDescriptionChange} />
+      <CategoryForm 
+        setSelectedCategoryName={setSelectedCategoryName}
+      onCategoryChange={(categoryId) => setCurrentTransaction(prev => ({ ...prev, categoryId }))} />
+      <DescriptionForm 
+  selectedCategoryName={selectedCategoryName} // Pass the selected category name
+  onDescriptionChange={(descriptionId) => {
+    // Handle description change
+    setCurrentTransaction(prev => ({ ...prev, descriptionId }));
+  }}
+/>
       {message && (
         <div style={{ color: messageType === 'error' ? 'red' : 'green' }}>
           {message}
         </div>
       )}
-      <Button type="submit" style={{ marginTop: '20px' }}>Add Transaction</Button>
-      <div>
-        <h2>Transaction Preview</h2>
-        <TransactionTableForm transactionsData={transactions} />
-      </div>
+  {currentTransaction && (
+    <TransactionPreviewForm 
+      date={currentTransaction.date}
+      amount={currentTransaction.amount}
+      category={categoryName} 
+      description={descriptionName}
+      onSubmit={handleSubmit}
+    />
+  )}
     </form>
   );
 };
 
-export default TransactionEntryForm;
+export default TransactionEntryForm

@@ -24,8 +24,7 @@ router.post('/transactionImport', multerimport.array('files', 10), async (req, r
             return res.status(400).send('No file uploaded.');
         }
 
-        const fileHash = generateFileHash(req.file.path);
-
+        const fileBuffer = fs.readFileSync(req.file.path);
         const fileData = {
             fileName: req.file.originalname,
             fileSize: req.file.size,
@@ -34,7 +33,7 @@ router.post('/transactionImport', multerimport.array('files', 10), async (req, r
             path: req.file.path,
             isProcessed: false,
             importDate: Date.now(),
-            fileHash: fileHash
+            buffer: fileBuffer
         };
 
         const savedFile = await fileController.importFile(fileData);

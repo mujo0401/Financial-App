@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import CategoryWiseSpending from 'components/pages/reports/categoryWiseSpending';
-import MonthlyIncomeVsExpense from 'components/pages/reports/monthlyIncomeVsExpense';
-import SpendingOverTime from 'components/pages/reports/spendingOverTime';
+import createSunburst from 'components/pages/reports/sunburstChart';
 import { Label, Input } from 'components/assets/localStyle';
 import {fetchCategoryWiseSpending, fetchMonthlyIncomeVsExpense, fetchSpendingOverTime} from 'components/services/dashboardService';
 
@@ -18,6 +16,7 @@ const DashboardForm = () => {
   const [categoryData, setCategoryData] = useState([]);
   const [incomeExpenseData, setIncomeExpenseData] = useState([]);
   const [spendingData, setSpendingData] = useState([]);
+  const [sunburstData, setSunburstData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,6 +33,10 @@ const DashboardForm = () => {
         // Fetching spending over time data
         const spendingData = await fetchSpendingOverTime(startDate, endDate);
         setSpendingData(spendingData);
+
+         // Fetching spending over time data
+         const sunburstData = await createSunburst(startDate, endDate);
+         setSpendingData(sunburstData);
   
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -71,10 +74,7 @@ const DashboardForm = () => {
         <div>Loading reports...</div>
         ) : (
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <CategoryWiseSpending data={categoryData} />
-              <MonthlyIncomeVsExpense data={incomeExpenseData} />
-              <SpendingOverTime data={spendingData} />
-
+       
           </div>
         )}
       </div>

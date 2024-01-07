@@ -3,6 +3,8 @@ import transactionController from '../controllers/transactionController.js';
 
 const router = express.Router();
 
-router.post('/', transactionController.addTransaction);
+router.post('/',async (req, res) => {
+    await transactionController.addTransaction(req.body, res);
+  });
 
 export default router;
