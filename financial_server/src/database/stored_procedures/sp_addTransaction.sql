@@ -2,13 +2,13 @@ CREATE PROCEDURE sp_AddTransaction
     @categoryId INT,
     @descriptionId INT,
     @amount DECIMAL(10, 2),
-    @date DATETIME
+    @date DATE 
 AS
 BEGIN
     BEGIN TRY
         -- Insert transaction details
         INSERT INTO dbo.TransactionDetails (categoryId, descriptionId, amount, date)
-        VALUES (@categoryId, @descriptionId, @amount, @date);
+        VALUES (@categoryId, @descriptionId, @amount, CAST(@date AS DATE));
 
         -- Return the new transaction ID
         SELECT SCOPE_IDENTITY() AS NewTransactionId;

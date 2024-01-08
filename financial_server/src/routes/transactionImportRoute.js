@@ -8,7 +8,7 @@ const router = express.Router();
 // Multer setup for file storage
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, 'imports/'); 
+        cb(null, 'filestore/'); 
     },
     filename: function(req, file, cb) {
         cb(null, file.originalname); 

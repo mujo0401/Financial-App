@@ -1,6 +1,6 @@
 CREATE PROCEDURE sp_GetMonthlyIncomeVsExpense
-    @startDate DATETIME,
-    @endDate DATETIME
+    @startDate DATE,
+    @endDate DATE
 AS
 BEGIN
     SELECT 

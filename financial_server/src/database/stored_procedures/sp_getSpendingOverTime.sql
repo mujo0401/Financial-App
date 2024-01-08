@@ -1,19 +1,18 @@
 CREATE PROCEDURE sp_GetSpendingOverTime
-    @startDate DATETIME,
-    @endDate DATETIME
+   @startDate DATE,
+    @endDate DATE
 AS
 BEGIN
     SELECT 
-        MONTH(date) AS month, 
-        SUM(amount) AS totalAmount
+        t.amount, 
+        c.name AS categoryName, 
+        d.name AS descriptionName 
     FROM 
-        dbo.TransactionDetails
+        TransactionDetails t
+    JOIN 
+        Categories c ON t.categoryId = c.id
+    JOIN 
+        Descriptions d ON t.descriptionId = d.id;
     WHERE 
-        date >= @startDate AND 
-        date <= @endDate AND
-        categoryId IN (SELECT id FROM dbo.Category WHERE name = 'Expense')
-    GROUP BY 
-        MONTH(date)
-    ORDER BY 
-        month ASC;
+        date >= @startDate AND date <= @endDate
 END

@@ -3,11 +3,7 @@ const DASHBOARD_URL = 'http://localhost:3000/api/dashboard'
 // Fetch spending data over time
 export const fetchSpendingOverTime = async (startDate, endDate) => {
   try {
-    const response = await fetch(`${DASHBOARD_URL}/spending-over-time?startDate=${startDate}&endDate=${endDate}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }
-    });
+    const response = await fetch(`${DASHBOARD_URL}/spending-over-time?startDate=${startDate}&endDate=${endDate}`);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -19,21 +15,16 @@ export const fetchSpendingOverTime = async (startDate, endDate) => {
 };
 
 // Fetch category-wise spending data
-export const fetchCategoryWiseSpending = async (startDate, endDate) => {
+export const fetchSpendingByCategory = async (startDate, endDate) => {
   try {
-    const response = await fetch(`${DASHBOARD_URL}/category-wise-spending?startDate=${startDate}&endDate=${endDate}`, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }
-    });
+    const response = await fetch(`${DASHBOARD_URL}/spending-by-category?startDate=${startDate}&endDate=${endDate}`);
     
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
     return await response.json();
   } catch (error) {
-    console.error('Error fetching category-wise spending:', error);
+    console.error('Error fetching spending by category data:', error);
     throw error;
   }
 };
@@ -41,13 +32,7 @@ export const fetchCategoryWiseSpending = async (startDate, endDate) => {
 // Fetch monthly income vs expense data
 export const fetchMonthlyIncomeVsExpense = async (startDate, endDate) => {
   try {
-    const response = await fetch(`${DASHBOARD_URL}/monthly-income-expense?startDate=${startDate}&endDate=${endDate}`, {
-    
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }
-    });
+    const response = await fetch(`${DASHBOARD_URL}/monthly-income-expense?startDate=${startDate}&endDate=${endDate}`);
 
     if (!response.ok) {
       throw new Error('Network response was not ok');

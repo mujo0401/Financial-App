@@ -1,4 +1,4 @@
-import sequelize from '../services/connectionService.js';
+
 import parsingController from './parsingController.js';
 import transactionController from './transactionController.js';
 

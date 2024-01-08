@@ -1,21 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend, PointElement } from 'chart.js';
+import { fetchSpendingOverTime } from 'components/services/dashboardService';
 
-ChartJS.register(CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend, PointElement);
 
 const getMonthName = (monthNumber) => {
   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   return monthNames[monthNumber - 1];
 }
 
-const SpendingOverTime = ({ data }) => {
-  if (!Array.isArray(data) || data.length === 0) {
-    return <div>No data available or data is loading.</div>;
-  }
+const SpendingOverTime = () => {
+  const currentDate = new Date('01-01-2024');
+  const oneYearFromNow = new Date();
+  oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
 
-  const labels = data.map(item => `${getMonthName(item._id)}`)
-  const expense = data.map(item => item.totalAmount);
+  const [startDate] = useState(currentDate);
+  const [endDate] = useState(oneYearFromNow);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetchSpendingOverTime(startDate, endDate);
+        setData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [startDate, endDate]);
+
+  const labels = Array.isArray(data) ? data.map(item => `${getMonthName(item._id)}`) : [];
+  const expense = Array.isArray(data) ? data.map(item => item.totalAmount) : [];
 
   const chartData = {
     labels,
@@ -51,7 +69,7 @@ const SpendingOverTime = ({ data }) => {
   return (
     <div>
       <h2>Spending Over Time</h2>
-      <div style={{ width: '400px', height: '400px' }}>
+      <div style={{ width: '500px', height: '400px' }}>
       <Line 
      key={`spending-over-time-${new Date().getTime()}`} 
   data={chartData} 

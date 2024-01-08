@@ -6,10 +6,10 @@ const fileController = {
         return crypto.createHash('sha256').update(fileBuffer).digest('hex');
     },
 
-    getFile: async (hash) => {
+    getFile: async (fileHash) => {
         try {
-            const [files] = await sequelize.query('EXEC sp_GetFileByHash @fileHash = :hash', {
-                replacements: { hash },
+            const [files] = await sequelize.query('EXEC sp_GetFile @fileHash = :fileHash', {
+                replacements: { fileHash },
                 type: sequelize.QueryTypes.SELECT
             });
             return files[0];
@@ -28,7 +28,7 @@ const fileController = {
 
             // Call the stored procedure to import the file
             await sequelize.query('EXEC sp_ImportFile @filename = :filename, @filesize = :filesize, @importdate = :importdate, @fileHash = :fileHash, @mediatype = :mediatype, @encoding = :encoding, @path = :path, @isprocessed = :isprocessed', {
-                replacements: fileData
+                replacements: { fileData }
             });
 
             return fileData; // Returning the file data including the new hash
@@ -39,7 +39,7 @@ const fileController = {
 
     deleteFile: async (hash) => {
         try {
-            await sequelize.query('EXEC sp_DeleteFileByHash @fileHash = :hash', {
+            await sequelize.query('EXEC sp_DeleteFile @fileHash = :hash', {
                 replacements: { hash }
             });
             // You can return the result or a confirmation message
