@@ -1,8 +1,9 @@
 const FILE_URL = 'http://localhost:3000/api/files'; 
 
-const getFileByHash = async (fileId) => {
+const TransactionImportService = {
+ getFileByHash: async (hash) => {
     try {
-        const response = await fetch(`${FILE_URL}/${fileId}`);
+        const response = await fetch(`${FILE_URL}/${hash}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -11,9 +12,9 @@ const getFileByHash = async (fileId) => {
         console.error('Error retrieving file hash:', error);
         throw error;
     }
-};
+ },
 
-const importFiles = async (files) => {
+ importFiles: async (files) => {
     const formData = new FormData();
     for (const file of files) {
         formData.append('files', file);
@@ -32,9 +33,9 @@ const importFiles = async (files) => {
         console.error('Error importing files:', error);
         throw error;
     }
-};
+ },
 
-const deleteFileByHash = async (hash) => {
+ deleteFileByHash: async (hash) => {
     try {
         const response = await fetch(`${FILE_URL}/delete/${hash}`, {
             method: 'DELETE'
@@ -46,23 +47,24 @@ const deleteFileByHash = async (hash) => {
         console.error('Error deleting file:', error);
         throw error;
     }
-};
+ },
 
-const readFileAsArrayBuffer = (file) => {
+ readFileAsArrayBuffer: (file) => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
         reader.onerror = reject;
         reader.readAsArrayBuffer(file);
     });
-};
+ },
 
-const generateSHA256Hash = async (file) => {
-    const arrayBuffer = await readFileAsArrayBuffer(file);
+ generateSHA256Hash: async (file) => {
+    const arrayBuffer = await TransactionImportService.readFileAsArrayBuffer(file); // Use this method to read file content
     const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer)); 
     const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); 
     return hashHex;
+}
 };
 
-export { readFileAsArrayBuffer, generateSHA256Hash, deleteFileByHash, getFileByHash, importFiles };
+export default TransactionImportService;

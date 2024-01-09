@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend, PointElement } from 'chart.js';
-import { fetchSpendingOverTime } from 'components/services/dashboardService';
+import DashboardService from 'components/services/dashboardService';
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend, PointElement);
 
@@ -22,7 +22,7 @@ const SpendingOverTime = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetchSpendingOverTime(startDate, endDate);
+        const response = await DashboardService.fetchSpendingOverTime(startDate, endDate);
         setData(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);

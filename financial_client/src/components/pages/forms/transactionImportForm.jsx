@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import FileDrop from 'components/utils/dragndropUtil';
-import FileHandler from 'components/utils/fileHandler';
 import DescriptionService from 'components/services/descriptionService';
 import AddDescriptionForm from 'components/pages/forms/addDescriptionForm'; 
-import { importFiles } from 'components/services/transactionImportService';
+import TransactionImportService from 'components/services/transactionImportService';
 import { Style, StyledTh, StyledTd, StyledTr, StyledTable } from 'components/assets/localStyle';
 import { deleteButtonStyle, processButtonStyle } from 'components/assets/globalStyle';
 import { Button } from '@mui/material';
@@ -21,7 +20,7 @@ const TransactionImportForm = () => {
   const handleFilesAdded = async (newFiles) => {
     try {
         // Call importFiles with the array of new files
-        const response = await importFiles(newFiles);
+        const response = await TransactionImportService.importFiles(newFiles);
 
         // Process response for each file
         response.forEach(fileResponse => {
@@ -37,9 +36,9 @@ const TransactionImportForm = () => {
     }
 };
 
-  const handleProcessFiles = async () => {
+  const handleProcessFiles = async ({ file }) => {
     try {
-      const response = await importFiles(actualFiles);
+      const response = await TransactionImportService.importFiles(actualFiles);
       if (response.unrecognizedDescriptions && response.unrecognizedDescriptions.length > 0) {
         setUnrecognizedDescriptions(response.unrecognizedDescriptions);
       } else {
@@ -52,9 +51,9 @@ const TransactionImportForm = () => {
 
   const handleDeleteFile = async (fileHash) => {
     try {
-      const response = await FileHandler.deleteFile(fileHash);
+      await TransactionImportService.deleteFileByHash(fileHash);
       setFiles(currentFiles => currentFiles.filter(file => file.hash !== fileHash));
-      setImportMessage(response);
+      setImportMessage(`File with hash ${fileHash} deleted successfully.`);
     } catch (error) {
       setImportError(`Error deleting file: ${error.message}`);
     }

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import './App.css';
 import backgroundImage from 'components/assets/images/background.png';
 import Navbar from 'components/navigation/Navbar';
-import checkBackendHealth from 'components/services/healthCheckService';
+import HealthService from 'components/services/healthCheckService';
 import TransactionEntry from 'components/pages/transactionEntry';
 import ErrorBoundary from 'components/errorHandling/errorBoundary';
 import TransactionImport from 'components/pages/transactionImport';
@@ -13,7 +13,7 @@ import Dashboard from 'components/pages/dashboard'
 
 const App = () => {
   useEffect(() => {
-    checkBackendHealth();
+    HealthService.checkBackendHealth();
   }, []);
 
   const appStyle = {

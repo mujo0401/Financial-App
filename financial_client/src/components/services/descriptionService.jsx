@@ -1,7 +1,8 @@
 const DESC_URL = 'http://localhost:3000/api/descriptions'; 
 
 
-     const getDescriptions = async () => {
+const DescriptionService = {
+      getDescriptions: async () => {
       try {
         const response = await fetch(DESC_URL, {
           method: 'GET',
@@ -24,9 +25,10 @@ const DESC_URL = 'http://localhost:3000/api/descriptions';
   
         return [];
       }
-    };
+    },
+    
 
-     const addDescription = async (descriptionName) => {
+      addDescription: async (descriptionName) => {
       try {
           const response = await fetch(DESC_URL, { 
           name: descriptionName,
@@ -40,9 +42,10 @@ const DESC_URL = 'http://localhost:3000/api/descriptions';
           console.error('Error adding description:', error);
           throw error; 
       }
+    }
   };
 
-  export default { getDescriptions, addDescription};
+  export default DescriptionService;
 
 
   

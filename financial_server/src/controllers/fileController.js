@@ -6,10 +6,10 @@ const fileController = {
         return crypto.createHash('sha256').update(fileBuffer).digest('hex');
     },
 
-    getFile: async (fileHash) => {
+    getFile: async (hash) => {
         try {
-            const [files] = await sequelize.query('EXEC sp_GetFile @fileHash = :fileHash', {
-                replacements: { fileHash },
+            const [files] = await sequelize.query('EXEC sp_GetFile @fileHash = :filehash', {
+                replacements: { hash },
                 type: sequelize.QueryTypes.SELECT
             });
             return files[0];

@@ -3,7 +3,7 @@ import { Spinner } from 'components/assets/localStyle';
 import SpendingByCategory from 'components/pages/reports/spendingByCategory';
 import SpendingOverTime from 'components/pages/reports/spendingOverTime';
 import MonthlyIncomeVsExpense from 'components/pages/reports/monthlyIncomeVsExpense';
-import {fetchSpendingByCategory, fetchMonthlyIncomeVsExpense, fetchSpendingOverTime} from 'components/services/dashboardService';
+import DashboardService from 'components/services/dashboardService';
 import DateForm from 'components/pages/forms/dateForm';
 
 const DashboardForm = () => {
@@ -28,15 +28,15 @@ const DashboardForm = () => {
       setLoading(true);
       try {
         // Fetching category-wise spending data
-        const categoryData = await fetchSpendingByCategory(startDate, endDate);
+        const categoryData = await DashboardService.fetchSpendingByCategory(startDate, endDate);
         if (isMounted) setCategoricalSpendingData(categoryData);
 
         // Fetching monthly income vs expense data
-        const incomeExpenseData = await fetchMonthlyIncomeVsExpense(startDate, endDate);
+        const incomeExpenseData = await DashboardService.fetchMonthlyIncomeVsExpense(startDate, endDate);
         if (isMounted) setIncomeExpenseData(incomeExpenseData);
   
         // Fetching spending over time data
-        const spendingData = await fetchSpendingOverTime(startDate, endDate);
+        const spendingData = await DashboardService.fetchSpendingOverTime(startDate, endDate);
         if (isMounted) setSpendingData(spendingData);
   
       } catch (error) {

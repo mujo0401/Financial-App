@@ -9,7 +9,7 @@ CREATE PROCEDURE sp_ImportFile
     @isprocessed BIT
 AS
 BEGIN
-    IF EXISTS (SELECT 1 FROM dbo.Files WHERE fileHash = @fileHash)
+    IF EXISTS (SELECT 1 FROM dbo.Files WHERE filehash = @fileHash)
     BEGIN
         RAISERROR('File already exists with this hash.', 16, 1);
     END

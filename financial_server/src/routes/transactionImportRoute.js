@@ -8,7 +8,7 @@ const router = express.Router();
 // Multer setup for file storage
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, 'filestore/'); 
+        cb(null, 'uploads/'); 
     },
     filename: function(req, file, cb) {
         cb(null, file.originalname); 
@@ -26,13 +26,13 @@ router.post('/transactionImport', multerimport.array('files', 10), async (req, r
 
         const fileBuffer = fs.readFileSync(req.file.path);
         const fileData = {
-            fileName: req.file.originalname,
-            fileSize: req.file.size,
-            mediaType: req.file.mimetype,
+            filename: req.file.originalname,
+            filesize: req.file.size,
+            mediatype: req.file.mimetype,
             encoding: req.encoding,
             path: req.file.path,
-            isProcessed: false,
-            importDate: Date.now(),
+            isprocessed: false,
+            importdate: Date.now(),
             buffer: fileBuffer
         };
 
@@ -45,7 +45,7 @@ router.post('/transactionImport', multerimport.array('files', 10), async (req, r
 
 router.get('/files/:hash', async (req, res) => {
     try {
-        const files = await getFile(req.params.hash);
+        const files = await fileController.getFile(req.params.hash);
         res.json(files);
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import {fetchSpendingByCategory} from 'components/services/dashboardService';
+import DashboardService from 'components/services/dashboardService';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -50,7 +50,7 @@ const SpendingByCategory = () => {
       useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await fetchSpendingByCategory(startDate, endDate);
+            const response = await DashboardService.fetchSpendingByCategory(startDate, endDate);
             if (response && Array.isArray(response.data)) {
               const fetchedData = response.data;
               setChartData({

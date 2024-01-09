@@ -1,7 +1,8 @@
 const DASHBOARD_URL = 'http://localhost:3000/api/dashboard'
 
+const DashboardService = {
 // Fetch spending data over time
-export const fetchSpendingOverTime = async (startDate, endDate) => {
+  fetchSpendingOverTime: async (startDate, endDate) => {
   try {
     const response = await fetch(`${DASHBOARD_URL}/spending-over-time?startDate=${startDate}&endDate=${endDate}`);
     if (!response.ok) {
@@ -12,10 +13,10 @@ export const fetchSpendingOverTime = async (startDate, endDate) => {
     console.error('Error fetching spending over time:', error);
     throw error;
   }
-};
+},
 
 // Fetch category-wise spending data
-export const fetchSpendingByCategory = async (startDate, endDate) => {
+ fetchSpendingByCategory: async (startDate, endDate) => {
   try {
     const response = await fetch(`${DASHBOARD_URL}/spending-by-category?startDate=${startDate}&endDate=${endDate}`);
     
@@ -27,10 +28,10 @@ export const fetchSpendingByCategory = async (startDate, endDate) => {
     console.error('Error fetching spending by category data:', error);
     throw error;
   }
-};
+},
 
 // Fetch monthly income vs expense data
-export const fetchMonthlyIncomeVsExpense = async (startDate, endDate) => {
+ fetchMonthlyIncomeVsExpense: async (startDate, endDate) => {
   try {
     const response = await fetch(`${DASHBOARD_URL}/monthly-income-expense?startDate=${startDate}&endDate=${endDate}`);
 
@@ -43,4 +44,7 @@ export const fetchMonthlyIncomeVsExpense = async (startDate, endDate) => {
     console.error('Error fetching monthly income vs expense:', error);
     throw error;
   }
-}
+ }
+};
+
+export default DashboardService;

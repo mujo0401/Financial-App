@@ -1,15 +1,30 @@
-// healthCheck.js
-import axios from 'axios';
+const HEALTH_URL = 'http://localhost:3000/api/health'; 
 
-const checkBackendHealth = async () => {
-  try {
-    const response = await axios.get('${http://localhost:3000/api/health');
-    if (response.status === 200) {
-      console.log('Backend is up and running!');
+const HealthCheckService = {
+   checkBackendHealth: async () => {
+    try {
+      const response = await fetch(HEALTH_URL, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching descriptions:', error);
+      if (error.response) {
+        console.error('Error Data:', error.response.data);
+        console.error('Error Status:', error.response.status);
+        console.error('Error Headers:', error.response.headers);
+      } else if (error.request) {
+        console.error('Error Request:', error.request);
+      } else {
+        console.error('Error Message:', error.message);
+      }
+
+      return [];
     }
-  } catch (error) {
-    console.error('Cannot reach the backend:', error.message);
-  }
-};
+   }
+  };
 
-export default checkBackendHealth;
+export default HealthCheckService;

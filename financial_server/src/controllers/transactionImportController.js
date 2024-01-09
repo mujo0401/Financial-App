@@ -3,16 +3,16 @@ import parsingController from './parsingController.js';
 import transactionController from './transactionController.js';
 
 const transactionImportController = {
-  importData: async (file) => {
-    if (!file) {
+  importData: async (files) => {
+    if (!files) {
         throw new Error('No file provided');
     }
 
     try {
-        if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+        if (files.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
             // Handle XLSX file
-            await parsingController.readXLSXFile(file.buffer);
-        } else if (file.mimetype === 'application/json') {
+            await parsingController.readXLSXFile(files.buffer);
+        } else if (files.mimetype === 'application/json') {
             // Handle JSON file
             const records = JSON.parse(file.buffer.toString());
             for (const record of records) {

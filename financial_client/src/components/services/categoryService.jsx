@@ -1,6 +1,6 @@
 const CAT_URL = 'http://localhost:3000/api/categories'; 
 
-const categoryService = {
+const CategoryService = {
   getCategories: async () => {
     try {
       const response = await fetch(CAT_URL, {
@@ -27,4 +27,4 @@ const categoryService = {
   }
 };
 
-export default categoryService;
+export default CategoryService;
