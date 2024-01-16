@@ -4,7 +4,7 @@ import SpendingByCategory from 'components/pages/reports/spendingByCategory';
 import SpendingOverTime from 'components/pages/reports/spendingOverTime';
 import MonthlyIncomeVsExpense from 'components/pages/reports/monthlyIncomeVsExpense';
 import DashboardService from 'components/services/dashboardService';
-import DateForm from 'components/pages/forms/dateForm';
+import DateForm from 'components/pages/forms/subforms/dateForm';
 
 const DashboardForm = () => {
   const [startDate, setStartDate] = useState();

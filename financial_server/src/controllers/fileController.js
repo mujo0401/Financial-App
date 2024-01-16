@@ -5,44 +5,42 @@ const fileController = {
     generateFileHash: (fileBuffer) => {
         return crypto.createHash('sha256').update(fileBuffer).digest('hex');
     },
-
-    getFile: async (hash) => {
+        
+    addFile: async (fileData) => {
         try {
-            const [files] = await sequelize.query('EXEC sp_GetFile @fileHash = :filehash', {
-                replacements: { hash },
+            // Check if fileData.filehash is truthy
+            if (!fileData.filehash) {
+                throw new Error('File hash is missing or invalid');
+            }
+    
+            // Check if a file with the same hash already exists
+            const [existingFile] = await sequelize.query('EXEC sp_CheckFile @filehash = :filehash', {
+                replacements: { filehash: fileData.filehash },
                 type: sequelize.QueryTypes.SELECT
             });
-            return files[0];
+    
+            if (existingFile && existingFile.length > 0) {
+                return existingFile;
+                // Handle existing file (skip insertion, update record, etc.)
+            } else {
+                // Insert the new file
+                const [results] = await sequelize.query('EXEC sp_AddFile @filename = :filename, @filesize = :filesize, @importdate = :importdate, @filehash = :filehash, @mediatype = :mediatype, @encoding = :encoding, @isprocessed = :isprocessed', {
+                    replacements: fileData,
+                    type: sequelize.QueryTypes.INSERT
+                   
+                });
+                return results
+            }
         } catch (error) {
-            throw new Error('Error fetching files: ' + error.message);
-        }
-    },
-
-    importFile: async (fileData) => {
-        try {
-            // Generate file hash
-            const fileHash = fileController.generateFileHash(fileData.buffer);
-
-            // Update fileData with the generated hash
-            fileData.fileHash = fileHash;
-
-            // Call the stored procedure to import the file
-            await sequelize.query('EXEC sp_ImportFile @filename = :filename, @filesize = :filesize, @importdate = :importdate, @fileHash = :fileHash, @mediatype = :mediatype, @encoding = :encoding, @path = :path, @isprocessed = :isprocessed', {
-                replacements: { fileData }
-            });
-
-            return fileData; // Returning the file data including the new hash
-        } catch (error) {
-            throw new Error('Error importing file: ' + error.message);
+            res.status(400).json({ error: error.message });
         }
     },
 
     deleteFile: async (hash) => {
         try {
-            await sequelize.query('EXEC sp_DeleteFile @fileHash = :hash', {
-                replacements: { hash }
+            await sequelize.query('EXEC sp_DeleteFile @filehash = :filehash', {
+                replacements: { filehash: hash }
             });
-            // You can return the result or a confirmation message
         } catch (error) {
             throw new Error('Error deleting file: ' + error.message);
         }

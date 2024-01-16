@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import CategoryForm from 'components/pages/forms/categoryForm';
-import DescriptionForm from 'components/pages/forms/descriptionForm';
-import AmountForm from 'components/pages/forms/amountForm';
+import CategoryForm from 'components/pages/forms/subforms/categoryForm';
+import DescriptionForm from 'components/pages/forms/subforms/descriptionForm';
+import AmountForm from 'components/pages/forms/subforms/amountForm';
 import transactionEntryService from 'components/services/transactionEntryService';
-import TransactionPreviewForm from 'components/pages/forms/transactionPreviewForm';
+import TransactionPreviewForm from 'components/pages/forms/subforms/transactionPreviewForm';
 import categoryService from 'components/services/categoryService';
 import descriptionService from 'components/services/descriptionService';
 

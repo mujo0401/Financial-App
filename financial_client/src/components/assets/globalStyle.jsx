@@ -17,6 +17,9 @@ const theme = createTheme({
     process: {
       main: '#94d2bd',
     },
+    background: {
+      main: '#d5f2eb',
+    },
   },
   typography: {
     fontFamily: 'Roboto, sans-serif',

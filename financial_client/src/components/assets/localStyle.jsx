@@ -5,14 +5,14 @@ export const StyledTable = styled('table')(({ theme }) => ({
   width: '100%',
   borderCollapse: 'collapse',
   boxShadow: '0 2px 15px rgba(0, 0, 0, 0.1)',
+  backgroundColor: theme.palette.background.main,
 }));
 
 
 export const StyledTh = styled('th')(({ theme }) => ({
   padding: '10px 15px',
   border: '1px solid #ddd',
-  backgroundColor: theme.palette.secondary.main,
-  color: 'white',
+  color: theme.palette.secondary.main,
   textAlign: 'left',
 }));
 

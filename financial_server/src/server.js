@@ -8,6 +8,7 @@ import testConnection from './services/testConnection.js';
 import transactionRoute from './routes/transactionRoute.js';
 import categoryRoute from './routes/categoryRoute.js'; 
 import descriptionRoute from './routes/descriptionRoute.js'; 
+import fileRoute from './routes/fileRoute.js'
 import transactionImportRoute from './routes/transactionImportRoute.js';
 import dashboardRoute from './routes/dashboardRoute.js';
 import mappingRoute from './routes/mappingRoute.js';
@@ -67,13 +68,14 @@ const __dirname = path.dirname(__filename);
 server.use(express.static(path.join(__dirname, 'public'))); 
 
 // API routes
+server.use('/api/health', healthRoute);
 server.use('/api/dashboard', dashboardRoute);
 server.use('/api/mapping', mappingRoute);
 server.use('/api/categories', categoryRoute);
 server.use('/api/descriptions', descriptionRoute);
 server.use('/api/transactions', transactionRoute);
-server.use('/api/files', transactionImportRoute); 
-server.use('/api/health', healthRoute);
+server.use('/api/files', fileRoute); 
+server.use('/api/transactionImport', transactionImportRoute);
 
 // Error handling middleware
 server.use((err, req, res, next) => {
