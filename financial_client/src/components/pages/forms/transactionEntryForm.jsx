@@ -6,6 +6,8 @@ import transactionEntryService from 'components/services/transactionEntryService
 import TransactionPreviewForm from 'components/pages/forms/subforms/transactionPreviewForm';
 import categoryService from 'components/services/categoryService';
 import descriptionService from 'components/services/descriptionService';
+import MessageForm from './subforms/MessageForm';
+import messageService from 'components/services/messageService';
 
 const TransactionEntryForm = () => {
 
@@ -19,7 +21,7 @@ const TransactionEntryForm = () => {
   });
   const [categories, setCategories] = useState([]); 
   const [descriptions, setDescriptions] = useState([]); 
-  const [message, setMessage] = useState('');
+  const [Message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
   const [selectedCategoryName, setSelectedCategoryName] = useState('');
 
@@ -37,62 +39,100 @@ const TransactionEntryForm = () => {
   const categoryName = categories.find(c => c.id === currentTransaction.categoryId)?.name;
   const descriptionName = descriptions.find(d => d.id === currentTransaction.descriptionId)?.name;
 
-  const onDescriptionChange = (descriptionId) => {
-    setCurrentTransaction(prev => ({ ...prev, descriptionId }));
-  }
 
   const onAmountChange = (amount) => {
     setCurrentTransaction(prev => ({ ...prev, amount }));
   }
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
   
+    // Check if amount is null
+    if (!currentTransaction.amount) {
+      // Fetch error message from messageService
+      const response = await messageService.getMessage('Amount_Error');
+      const message = response.messageName;
+      setMessage(message);
+      setMessageType('error');
+      return;
+    }
+
+    if (!currentTransaction.categoryId) {
+      // Fetch error message from messageService
+      const response = await messageService.getMessage('Category_Error');
+      const message = response.messageName;
+      setMessage(message);
+      setMessageType('error');
+      return;
+    }
+    
+    if (!currentTransaction.descriptionId) {
+      // Fetch error message from messageService
+      const response = await messageService.getMessage('Description_Error');
+      const message = response.messageName;
+      setMessage(message);
+      setMessageType('error');
+      return;
+    }
+  
     try {
       const response = await transactionEntryService.addTransaction(currentTransaction);
-      if (response.message) {
-        setMessage(response.message);
-        setMessageType('success');
-      } else {
-        setMessage('Transaction added, but no message received.');
+      console.log('Server response:', response); // Add this line
+  
+      if (response.messageType) {
+        const messageResponse = await messageService.getMessage(response.messageType);
+        const message = messageResponse.messageName;
+        setMessage(message);
+        setMessageType(response.messageType);
       }
-      setCurrentTransaction({ categoryId: '', descriptionId: '', amount: '', date: today });
+
+      if (response.success) {
+        // Fetch success message from messageService
+        const successResponse = await messageService.getMessage('Success');
+        const successMessage = successResponse.messageName;
+        setMessage(successMessage);
+        setMessageType('success');
+      }
+
+      if (response.error) {
+        // Fetch error message from messageService
+        const errorResponse = await messageService.getMessage('Error');
+        const errorMessage = errorResponse.messageName;
+        setMessage(errorMessage);
+        setMessageType('error');
+      }
+      
     } catch (error) {
-      console.error('Error submitting transaction:', error);
-      setMessage('Failed to add transaction.');
+      console.error(error);
+      setMessage('An error occurred');
       setMessageType('error');
     }
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit}>
       <AmountForm onAmountChange={onAmountChange} />
       <CategoryForm 
         setSelectedCategoryName={setSelectedCategoryName}
-      onCategoryChange={(categoryId) => setCurrentTransaction(prev => ({ ...prev, categoryId }))} />
+        onCategoryChange={(categoryId) => setCurrentTransaction(prev => ({ ...prev, categoryId }))} 
+      />
       <DescriptionForm 
-  selectedCategoryName={selectedCategoryName} // Pass the selected category name
-  onDescriptionChange={(descriptionId) => {
-    // Handle description change
-    setCurrentTransaction(prev => ({ ...prev, descriptionId }));
-  }}
-/>
-      {message && (
-        <div style={{ color: messageType === 'error' ? 'red' : 'green' }}>
-          {message}
-        </div>
+        selectedCategoryName={selectedCategoryName} 
+        onDescriptionChange={(descriptionId) => {
+          setCurrentTransaction(prev => ({ ...prev, descriptionId }));
+        }}
+      />
+      <MessageForm message={Message} messageType={messageType} />
+      {currentTransaction && (
+        <TransactionPreviewForm 
+          date={currentTransaction.date}
+          amount={currentTransaction.amount}
+          category={categoryName} 
+          description={descriptionName}
+          onSubmit={handleSubmit}
+        />
       )}
-  {currentTransaction && (
-    <TransactionPreviewForm 
-      date={currentTransaction.date}
-      amount={currentTransaction.amount}
-      category={categoryName} 
-      description={descriptionName}
-      onSubmit={handleSubmit}
-    />
-  )}
     </form>
-  );
-};
+  )};
 
 export default TransactionEntryForm

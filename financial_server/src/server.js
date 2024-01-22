@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import WebSocket, { WebSocketServer } from 'ws';
+import { createServer } from 'http';
 import morgan from 'morgan';
 import healthRoute from './routes/healthRoute.js';
 import testConnection from './services/testConnection.js';
@@ -12,9 +14,56 @@ import fileRoute from './routes/fileRoute.js'
 import transactionImportRoute from './routes/transactionImportRoute.js';
 import dashboardRoute from './routes/dashboardRoute.js';
 import mappingRoute from './routes/mappingRoute.js';
+import messageRoute from './routes/messageRoute.js';
 
 
 const server = express();
+const connect = createServer(server);
+const wss = new WebSocketServer({ noServer: true });
+
+const connectionAttempts = new Map();
+
+wss.on('connection', (ws) => {
+  console.log('A user connected');
+
+  ws.on('message', (message) => {
+    console.log('Message received:', message);
+
+    // Broadcast the message to all other clients
+    wss.clients.forEach((client) => {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
+    });
+  });
+
+  ws.on('close', () => {
+    console.log('A user disconnected');
+  });
+});
+
+connect.on('upgrade', (request, socket, head) => {
+  const ip = request.socket.remoteAddress;
+
+  // Increment the number of connection attempts from this IP
+  connectionAttempts.set(ip, (connectionAttempts.get(ip) || 0) + 1);
+
+  // If the IP has made too many connection attempts, close the connection
+  if (connectionAttempts.get(ip) > 100) {
+    socket.destroy();
+    return;
+  }
+
+  wss.handleUpgrade(request, socket, head, (ws) => {
+    wss.emit('connection', ws, request);
+  });
+});
+
+// Reset the connection attempts every 15 minutes
+setInterval(() => {
+  connectionAttempts.clear();
+}, 15 * 60 * 1000);
+;
 
 server.use(cors({
   origin: `*`
@@ -76,6 +125,7 @@ server.use('/api/descriptions', descriptionRoute);
 server.use('/api/transactions', transactionRoute);
 server.use('/api/files', fileRoute); 
 server.use('/api/transactionImport', transactionImportRoute);
+server.use('/api/messages', messageRoute);
 
 // Error handling middleware
 server.use((err, req, res, next) => {

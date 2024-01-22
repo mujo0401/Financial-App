@@ -1,0 +1,5 @@
+CREATE TABLE Messages (
+  id INT IDENTITY(1,1) PRIMARY KEY,
+  messageName NVARCHAR(MAX) NOT NULL,
+  messageType NVARCHAR(MAX),
+);

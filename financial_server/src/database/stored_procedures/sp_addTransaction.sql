@@ -17,6 +17,7 @@ BEGIN
         -- Return the error message if the insert fails
         SELECT 
             ERROR_NUMBER() AS ErrorNumber,
-            ERROR_MESSAGE() AS ErrorMessage;
+            ERROR_MESSAGE() AS ErrorMessage,
+            1 AS ErrorCode; 
     END CATCH
 END

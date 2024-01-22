@@ -13,15 +13,17 @@ const FileService = {
                 body: formData
             });
             if (!response.ok) {
-                console.error('Error status:', response.status, 'Status text:', response.statusText);
-                throw new Error('Network response was not ok');
+                const errorBody = await response.json(); 
+                const errorMessage = errorBody.error || 'Network response was not ok';
+                throw new Error(errorMessage);
             }
             return await response.json();
         } catch (error) {
             console.error('Error importing files:', error);
-            throw error;
+            throw new Error(error.message); 
         }
     },
+
 
     deleteFile: async (hash) => {
         try {
@@ -31,7 +33,7 @@ const FileService = {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            return await response.json(); // You might want to return the response here
+            return await response.json(); 
         } catch (error) {
             console.error('Error deleting file:', error);
             throw error;

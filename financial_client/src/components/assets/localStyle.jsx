@@ -1,4 +1,5 @@
 import { styled } from '@mui/material/styles';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 
 
 export const StyledTable = styled('table')(({ theme }) => ({
@@ -210,6 +211,33 @@ export const StyledSelect = styled('select')(({ theme }) => ({
     borderColor: theme.palette.primary.main,
     outline: 'none',
   },
+}));
+
+export const StyledDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialog-paper': {
+    padding: theme.spacing(2),
+    backgroundColor: theme.palette.background.main,
+    boxShadow: '0 2px 15px rgba(0, 0, 0, 0.1)',
+  },
+}));
+
+export const StyledDialogTitle = styled(DialogTitle)(({ theme }) => ({
+  padding: '10px 15px',
+  color: theme.palette.secondary.main,
+  textAlign: 'left',
+}));
+
+export const StyledDialogContent = styled(DialogContent)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
+export const StyledDialogContentText = styled(DialogContentText)(({ theme }) => ({
+  color: theme.palette.text.primary,
+}));
+
+export const StyledDialogActions = styled(DialogActions)(({ theme }) => ({
+  padding: theme.spacing(1),
+  justifyContent: 'flex-end',
 }));
 
 export const Style = () => ({

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
 
-const ErrorDialog = ({ isOpen, onClose, errorMessage }) => {
+const ErrorDialogForm = ({ isOpen, onClose, errorMessage }) => {
     return (
         <Dialog
             open={isOpen}
@@ -9,7 +9,7 @@ const ErrorDialog = ({ isOpen, onClose, errorMessage }) => {
             aria-labelledby="error-dialog-title"
             aria-describedby="error-dialog-description"
         >
-            <DialogTitle id="error-dialog-title">{"Upload Error"}</DialogTitle>
+            <DialogTitle id="error-dialog-title">{"File duplication detected"}</DialogTitle>
             <DialogContent>
                 <DialogContentText id="error-dialog-description">
                     {errorMessage}
@@ -24,4 +24,4 @@ const ErrorDialog = ({ isOpen, onClose, errorMessage }) => {
     );
 };
 
-export default ErrorDialog;
+export default ErrorDialogForm;

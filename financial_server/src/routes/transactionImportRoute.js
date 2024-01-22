@@ -1,13 +1,15 @@
 import express from 'express';
 import fileController from '../controllers/fileController.js';
 import transactionImportController from '../controllers/descriptionController.js';
+import messageController from '../controllers/messageController.js';
 
 const router = express.Router();
 
 router.post('/', async (req, res) => {
     try {
         await transactionImportController.importData(req.body);
-        res.status(200).send('Finance data processed successfully');
+        const message = await messageController.getMessage('File_Success');
+        return { messageType: 'File_Success', message }; 
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -15,14 +17,19 @@ router.post('/', async (req, res) => {
 
 router.delete('/delete/:hash', async (req, res) => {
     try {
-        const result = await fileController.deleteFile(); 
+        const hash = req.params.hash;
+        const result = await fileController.deleteFile(hash); 
         if (result.deletedCount === 0) {
-            return res.status(404).send('No file found with the given hash.');
+            const message = await messageController.getMessage('Delete_Error');
+            return { messageType: 'Delete_Error', message }; 
         }
-        res.send('File deleted successfully');
+        const message = await messageController.getMessage('Delete_Success');
+        return { messageType: 'Delete_Success', message }; 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        const message = await messageController.getMessage('Server_Error');
+        return { messageType: 'Server_Error', message }; 
     }
 });
 
 export default router;
+

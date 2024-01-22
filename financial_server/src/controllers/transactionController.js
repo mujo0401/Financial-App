@@ -1,4 +1,5 @@
 import sequelize from '../services/connectionService.js';
+import messageController from '../controllers/messageController.js';
 
 const transactionController = {
   formatDate: () => {
@@ -22,28 +23,44 @@ const transactionController = {
     descriptionId = isNaN(parseInt(descriptionId)) ? null : parseInt(descriptionId);
     amount = isNaN(parseFloat(amount)) ? null : parseFloat(amount);
     const formattedDate = transactionController.formatDate();
-  
+
     try {
+      if (amount === null) {
+        const message = await messageController.getMessage('Amount_Error');
+        return { messageType: 'Amount_Error', message }; 
+      }
+    
+      if (categoryId === null) {
+        const message = await messageController.getMessage('Category_Error');
+        return { messageType: 'Category_Error', message }; 
+      }
+    
+      if (descriptionId === null) {
+        const message = await messageController.getMessage('Description_Error');
+        return { messageType: 'Description_Error', message }; 
+      }
+
       const [result] = await sequelize.query("EXEC sp_AddTransaction @categoryId = :categoryId, @descriptionId = :descriptionId, @amount = :amount, @date = :date", {
         replacements: { categoryId, descriptionId, amount, date: formattedDate },
         type: sequelize.QueryTypes.RAW 
       });
-  
+
       if (result[0] && result[0][0] && result[0][0].ErrorMessage) {
-        throw new Error(result[0][0].ErrorMessage);
+        const message = await messageController.getMessage('Server_Error');
+        return { messageType: 'Server_Error' , message};
       }
-  
+
       const newTransactionId = result && result[0] && result[0].NewTransactionId;
       if (!newTransactionId) {
-        throw new Error('Failed to create a new transaction');
+        const message = await messageController.getMessage('Server_Error');
+        return { messageType: 'Server_Error' , message}; 
       }
-  
-      return { message: 'Transaction added successfully', categoryId: newTransactionId };
+
     } catch (error) {
-      console.error('Error in addTransaction function:', error);
-      throw error; // Propagate the error up to the caller
+      const message = await messageController.getMessage('Transaction_Error');
+      return { messageType: 'Transaction_Error', message }; 
     }
   }
-}
+};
 
 export default transactionController;
