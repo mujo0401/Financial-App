@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Spinner } from 'components/assets/localStyle';
+import { Spinner } from 'components/assets/messageAssets';
 import SpendingByCategory from 'components/pages/reports/spendingByCategory';
 import SpendingOverTime from 'components/pages/reports/spendingOverTime';
 import MonthlyIncomeVsExpense from 'components/pages/reports/monthlyIncomeVsExpense';
 import DashboardService from 'components/services/dashboardService';
-import DateForm from 'components/pages/forms/subforms/dateForm';
+import DateForm from 'components/pages/forms/mid/dateForm';
 
 const DashboardForm = () => {
   const [startDate, setStartDate] = useState();

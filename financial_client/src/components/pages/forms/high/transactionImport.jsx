@@ -1,8 +1,8 @@
 // transactionUpload.jsx
 import React from 'react';
-import TransactionImportForm from 'components/pages/forms/transactionImportForm'; 
+import TransactionImportForm from 'components/pages/forms/high/transactionImportForm'; 
 import { Container } from '@mui/material';
-import ErrorBoundary from 'components/errorHandling/errorBoundary';
+import ErrorBoundary from 'components/pages/forms/low/errorForm';
 
 
 const TransactionImport = () => {

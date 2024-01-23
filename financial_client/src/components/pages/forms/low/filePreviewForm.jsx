@@ -1,6 +1,7 @@
 import React from 'react';
-import { Style, StyledTable, StyledTr, StyledTh, StyledTd, Button } from 'components/assets/localStyle';
-import { deleteButtonStyle } from 'components/assets/globalStyle';
+import { Style, StyledTr, StyledTh, StyledTd } from 'components/assets/generalStyle';
+import { DeleteButton } from 'components/assets/buttonAssets';
+import { StyledTable } from 'components/assets/tableAssets';
 
 
 const FilePreviewForm = ({ files, handleDeleteFile }) => {
@@ -9,19 +10,17 @@ const FilePreviewForm = ({ files, handleDeleteFile }) => {
             <thead style={Style.thead}>
                 <StyledTr>
                     <StyledTh style={Style.th}>File Name</StyledTh>
-                    <StyledTh style={Style.th}>Import Date</StyledTh>
                     <StyledTh style={Style.th}>Delete</StyledTh>
                 </StyledTr>
             </thead>
             <tbody>
                 {files.map((file, index) => (
                     <StyledTr key={index} style={Style.tr}>
-                        <StyledTd style={Style.StyledTd}>{file.filename}</StyledTd>
-                        <StyledTd style={Style.StyledTd}>{file.filedate}</StyledTd>
+                        <StyledTd style={Style.StyledTd}>{file.originalname}</StyledTd>
                         <StyledTd style={Style.StyledTd}>
-                            <Button style={deleteButtonStyle} onClick={() => handleDeleteFile(index)}>
+                            <DeleteButton onClick={() => handleDeleteFile(index)}>
                                 Delete
-                            </Button>
+                            </DeleteButton>
                         </StyledTd>
                     </StyledTr>
                 ))}

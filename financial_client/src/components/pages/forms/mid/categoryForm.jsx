@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { iconStyle } from 'components/assets/localStyle';
+import { iconStyle } from 'components/assets/iconAssets';
 import categoryService from 'components/services/categoryService'; 
 
-const CategoryForm = ({ onCategoryChange }) => {
+const CategoryForm = ({ onCategoryChange, reset }) => {
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
@@ -14,6 +14,12 @@ const CategoryForm = ({ onCategoryChange }) => {
 
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    if (reset) {
+      setSelectedCategoryId(null);
+    }
+  }, [reset]);
 
   const handleCategoryClick = (category) => {
     const isSameCategory = selectedCategoryId === category.id;
@@ -31,7 +37,7 @@ const CategoryForm = ({ onCategoryChange }) => {
   const renderCategories = () => {
     return (
       <div className="categories-container">
-        <h2>Transaction Buckets</h2>
+        <h2>Transaction Categories</h2>
         {categories.map((category) => (
           <div key={category.id} 
                style={getCategoryStyle(category.id)} 
@@ -43,11 +49,7 @@ const CategoryForm = ({ onCategoryChange }) => {
     );
   };
 
-  return (
-    <div>
-      {renderCategories()}
-    </div>
-  );
+  return renderCategories();
 };
 
 export default CategoryForm;

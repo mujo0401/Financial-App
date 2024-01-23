@@ -1,25 +1,23 @@
-import React, { useState } from 'react';
-import { Input, Label } from 'components/assets/localStyle';
+import React, { useState, useEffect } from 'react';
+import { Label } from 'components/assets/labelAssets';
+import { Input } from 'components/assets/inputAssets';   
 
-const AmountForm = ({ onAmountChange }) => {
-    const [amountEntries] = useState([]);
-    const [amount, setAmount] = useState('');
+const AmountForm = ({ onAmountChange, reset, initialAmount = '' }) => {
+    const [amount, setAmount] = useState(initialAmount);
     const [isInteracted, setIsInteracted] = useState(false);
+
+    useEffect(() => {
+        if (reset) {
+            setAmount(initialAmount);
+            setIsInteracted(false);
+        }
+    }, [reset, initialAmount]);
 
     const handleAmountChange = (newAmount) => {
         const parsedAmount = parseFloat(newAmount);
         setAmount(parsedAmount);
         onAmountChange(parsedAmount); 
         setIsInteracted(true); 
-      };
-
-
-    const renderAmounts = () => {
-        return amountEntries.map((amount, index) => (
-            <div key={index}>
-                {amount}
-            </div>
-        ));
     };
 
     // Calculate color based on amount
@@ -45,15 +43,13 @@ const AmountForm = ({ onAmountChange }) => {
                 value={amount}
                 onChange={e => handleAmountChange(e.target.value)}
                 required
-                style={{
-                    background: color,
-                    WebkitAppearance: 'none'
-                }}
+                style={{ background: color, WebkitAppearance: 'none' }}
             />
-            {isInteracted && <span style={{ fontWeight: 'bold', fontSize: '1.2em', color: color }}>
-                ${parseFloat(amount).toFixed(2)}
-            </span>}
-            {renderAmounts()}
+            {isInteracted && (
+                <span style={{ fontWeight: 'bold', fontSize: '1.2em', color: color }}>
+                    ${parseFloat(amount).toFixed(2)}
+                </span>
+            )}
         </div>
     );
 };

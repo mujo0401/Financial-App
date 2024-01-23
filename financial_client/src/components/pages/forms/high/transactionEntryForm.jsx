@@ -1,29 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import CategoryForm from 'components/pages/forms/subforms/categoryForm';
-import DescriptionForm from 'components/pages/forms/subforms/descriptionForm';
-import AmountForm from 'components/pages/forms/subforms/amountForm';
+import CategoryForm from 'components/pages/forms/mid/categoryForm';
+import DescriptionForm from 'components/pages/forms/mid/descriptionForm';
+import AmountForm from 'components/pages/forms/mid/amountForm';
 import transactionEntryService from 'components/services/transactionEntryService';
-import TransactionPreviewForm from 'components/pages/forms/subforms/transactionPreviewForm';
+import TransactionPreviewForm from 'components/pages/forms/low/transactionPreviewForm';
 import categoryService from 'components/services/categoryService';
 import descriptionService from 'components/services/descriptionService';
-import MessageForm from './subforms/MessageForm';
+import MessageForm from 'components/pages/forms/mid/MessageForm';
 import messageService from 'components/services/messageService';
 
 const TransactionEntryForm = () => {
-
   const today = new Date().toISOString().split('T')[0];
-  // State to hold the entire transaction
-  const [currentTransaction, setCurrentTransaction] = useState({
+  const initialTransactionState = {
     categoryId: '', 
     descriptionId: '', 
     amount: '',
     date: today
-  });
+  };
+
+  const [currentTransaction, setCurrentTransaction] = useState(initialTransactionState);
+  const [transaction, setTransaction] = useState(initialTransactionState);
+
   const [categories, setCategories] = useState([]); 
   const [descriptions, setDescriptions] = useState([]); 
   const [Message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
   const [selectedCategoryName, setSelectedCategoryName] = useState('');
+  const [reset, setReset] = useState(false);
 
   useEffect(() => {
     const fetchCategoriesAndDescriptions = async () => {
@@ -39,17 +42,10 @@ const TransactionEntryForm = () => {
   const categoryName = categories.find(c => c.id === currentTransaction.categoryId)?.name;
   const descriptionName = descriptions.find(d => d.id === currentTransaction.descriptionId)?.name;
 
-
-  const onAmountChange = (amount) => {
-    setCurrentTransaction(prev => ({ ...prev, amount }));
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    // Check if amount is null
     if (!currentTransaction.amount) {
-      // Fetch error message from messageService
       const response = await messageService.getMessage('Amount_Error');
       const message = response.messageName;
       setMessage(message);
@@ -58,7 +54,6 @@ const TransactionEntryForm = () => {
     }
 
     if (!currentTransaction.categoryId) {
-      // Fetch error message from messageService
       const response = await messageService.getMessage('Category_Error');
       const message = response.messageName;
       setMessage(message);
@@ -67,70 +62,100 @@ const TransactionEntryForm = () => {
     }
     
     if (!currentTransaction.descriptionId) {
-      // Fetch error message from messageService
       const response = await messageService.getMessage('Description_Error');
       const message = response.messageName;
       setMessage(message);
       setMessageType('error');
       return;
     }
-  
+
     try {
       const response = await transactionEntryService.addTransaction(currentTransaction);
-      console.log('Server response:', response); // Add this line
-  
-      if (response.messageType) {
-        const messageResponse = await messageService.getMessage(response.messageType);
-        const message = messageResponse.messageName;
-        setMessage(message);
-        setMessageType(response.messageType);
-      }
-
-      if (response.success) {
-        // Fetch success message from messageService
-        const successResponse = await messageService.getMessage('Success');
+      if (response.status === 200) {
+        const successResponse = await messageService.getMessage('Transaction_Success');
         const successMessage = successResponse.messageName;
         setMessage(successMessage);
         setMessageType('success');
+        handleReset(); 
+        setCurrentTransaction(initialTransactionState);
+        const updatedTransactions = await transactionEntryService.getTransactions();
+        setTransaction(updatedTransactions);
+        initialTransactionState(); //
       }
 
-      if (response.error) {
-        // Fetch error message from messageService
-        const errorResponse = await messageService.getMessage('Error');
+      if (response.status === 400) {
+        const errorResponse = await messageService.getMessage('Transaction_Error');
         const errorMessage = errorResponse.messageName;
         setMessage(errorMessage);
         setMessageType('error');
       }
-      
     } catch (error) {
-      console.error(error);
-      setMessage('An error occurred');
+      const response = await messageService.getMessage('Server_Error');
+      const message = response.messageName;
+      setMessage(message);
       setMessageType('error');
     }
+
+    setMessage('');
+    setMessageType('');
   }
+
+  const resetMessages = () => {
+    setMessage('');
+    setMessageType('');
+  };
+
+  const handleReset = () => {
+    setReset(true);
+  };
+  
+  useEffect(() => {
+    if (reset) {
+      setTransaction(initialTransactionState);
+      setReset(false);
+    }
+  }, [reset]);
 
   return (
     <form onSubmit={handleSubmit}>
-      <AmountForm onAmountChange={onAmountChange} />
-      <CategoryForm 
-        setSelectedCategoryName={setSelectedCategoryName}
-        onCategoryChange={(categoryId) => setCurrentTransaction(prev => ({ ...prev, categoryId }))} 
+        {Message && <MessageForm message={Message} messageType={messageType} />}
+       <AmountForm 
+  onAmountChange={(amount) => {
+    setCurrentTransaction(prev => ({ ...prev, amount }));
+    resetMessages(); // Reset the messages when the amount is changed
+  }}     
       />
+   <CategoryForm 
+    setSelectedCategoryName={setSelectedCategoryName}
+    onCategoryChange={(categoryId) => {
+    setCurrentTransaction(prev => ({ ...prev, categoryId }));
+    resetMessages(); // Reset the messages when a category is selected
+     }}
+    />
       <DescriptionForm 
         selectedCategoryName={selectedCategoryName} 
         onDescriptionChange={(descriptionId) => {
           setCurrentTransaction(prev => ({ ...prev, descriptionId }));
+          resetMessages(); 
         }}
       />
-      <MessageForm message={Message} messageType={messageType} />
+     
       {currentTransaction && (
         <TransactionPreviewForm 
           date={currentTransaction.date}
           amount={currentTransaction.amount}
           category={categoryName} 
           description={descriptionName}
-          onSubmit={handleSubmit}
-        />
+          onSubmit={handleSubmit} />
+      )}
+      
+     {currentTransaction && (
+    <TransactionPreviewForm 
+    date={currentTransaction.date}
+    amount={currentTransaction.amount}
+    category={categoryName} 
+    description={descriptionName}
+    onReset={handleReset} />
       )}
     </form>
   )};

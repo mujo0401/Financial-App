@@ -25,7 +25,7 @@ const theme = createTheme({
     fontFamily: 'Roboto, sans-serif',
     fontSize: 16,
     h1: {
-      fontSize: '2em',
+      fontSize: '1em',
       fontWeight: 'bold',
     },
     h2: {
@@ -34,25 +34,5 @@ const theme = createTheme({
     },
   },
 });
-
-export const buttonStyle = {
-  padding: '10px 20px',
-  margin: '5px',
-  borderRadius: '5px',
-  border: 'none',
-  cursor: 'pointer',
-};
-
-export const deleteButtonStyle = {
-  ...buttonStyle,
-  backgroundColor: '#ff4d4d', // Red color for delete button
-  color: 'white',
-};
-
-export const processButtonStyle = {
-  ...buttonStyle,
-  backgroundColor: '#005f73', // Green color for process button
-  color: 'white',
-};
 
 export default theme 

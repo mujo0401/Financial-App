@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Label, Input } from 'components/assets/localStyle';
+import { Label } from 'components/assets/labelAssets';
+import { Input } from 'components/assets/inputAssets';   
 
 const DateForm = ({ onDateChange }) => {
   const currentDate = new Date('01-01-2024');

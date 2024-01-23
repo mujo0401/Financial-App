@@ -4,11 +4,11 @@ import backgroundImage from 'components/assets/images/background.png';
 import Navbar from 'components/navigation/Navbar';
 import HealthService from 'components/services/healthCheckService';
 import TransactionEntry from 'components/pages/transactionEntry';
-import ErrorBoundary from 'components/errorHandling/errorBoundary';
-import TransactionImport from 'components/pages/transactionImport';
+import ErrorBoundary from 'components/pages/forms/low/errorForm';
+import TransactionImport from 'components/pages/forms/high/transactionImport';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import theme from 'components/assets/globalStyle'; 
+import theme from 'components/assets/theme'; 
 import Dashboard from 'components/pages/dashboard'
 
 const App = () => {

@@ -1,7 +1,7 @@
 // In Navbar.js
 
 import React from 'react';
-import { Button } from 'components/assets/localStyle';
+import { Button } from 'components/assets/buttonAssets';
 
 const Navbar = () => {
   const scrollToSection = (sectionId) => {

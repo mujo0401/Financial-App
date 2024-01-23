@@ -1,4 +1,4 @@
-import xlsx from 'xlsx';
+import fs from 'fs';
 import sequelize from "../services/connectionService.js";
 import mappingController from './mappingController.js';
 import categoryController from './categoryController.js';
@@ -14,20 +14,19 @@ const parsingController = {
     return null; 
   },
 
-  readXLSXFile: async (filePath) => {
-    const workbook = xlsx.readFile(filePath);
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-    const data = xlsx.utils.sheet_to_json(sheet, { header: 1, range: 13 });
+  readTextFile: async (filePath) => {
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const lines = fileContent.split('\n'); // Adjust this if your file uses a different line delimiter
 
-    for (let i = 1; i < data.length; i++) {
-      const [transDate, , description, amount] = data[i];
-      // Assume getCategoryFromDescription, getCategoryId, getDescriptionId are defined
+    for (let line of lines) {
+      const fields = line.split(','); // Adjust the delimiter based on your file's format
+      const [transDate, , description, amount] = fields;
+
       const categoryName = mappingController.getCategoryFromDescription(description);
       if (categoryName) {
         const categoryId = await categoryController.getCategories(categoryName);
         const descriptionId = await descriptionController.getDescriptions(description);
-        const parsedDate = parsedDate(transDate); 
+        const parsedDate = this.parseDate(transDate); 
 
         await sequelize.query('EXEC sp_addTransaction @categoryId = :categoryId, @descriptionId = :descriptionId, @amount = :amount, @date = :date', {
           replacements: { categoryId, descriptionId, amount: parseFloat(amount), date: parsedDate }
@@ -35,6 +34,7 @@ const parsingController = {
       }
     }
   },
+
 
   parseDate: (dateStr) => {
     if (!dateStr) return new Date(); 

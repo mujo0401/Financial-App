@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { iconStyle } from 'components/assets/localStyle';
+import { iconStyle } from 'components/assets/iconAssets';
 import descriptionService from 'components/services/descriptionService'; 
 import mappingService from 'components/services/mappingService';
 
-const DescriptionForm = ({ onDescriptionChange, selectedCategoryName }) => {
+const DescriptionForm = ({ onDescriptionChange, selectedCategoryName, reset }) => {
   const [descriptions, setDescriptions] = useState([]);
   const [selectedDescriptionId, setSelectedDescriptionId] = useState(null);
   const [categoryToDescriptionMap, setCategoryToDescriptionMap] = useState({});
@@ -18,6 +18,12 @@ const DescriptionForm = ({ onDescriptionChange, selectedCategoryName }) => {
   
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (reset) {
+      setSelectedDescriptionId(null);
+    }
+  }, [reset]);
 
   const filteredDescriptions = selectedCategoryName 
     ? descriptions.filter(desc => {
