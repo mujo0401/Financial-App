@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 export const ButtonContainer = {
     display: 'flex',
     flexDirection: 'row', 
-    justifyContent: 'space-between',
+    //justifyContent: 'space-between',
     marginTop: '20px',
   };
 

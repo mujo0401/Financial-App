@@ -1,7 +1,7 @@
 import sequelize from '../services/connectionService.js';
-import messageController from '../controllers/messageController.js';
+import messageController from './messageController.js';
 
-const transactionController = {
+const TransactionController = {
   formatDate: () => {
     const d = new Date();
     d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
@@ -69,4 +69,4 @@ const transactionController = {
   }
 };
 
-export default transactionController;
+export default TransactionController;

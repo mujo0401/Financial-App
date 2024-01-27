@@ -1,5 +1,5 @@
 import express from 'express';
-import transactionController from '../controllers/transactionController.js';
+import TransactionEntryController from '../controllers/transactionEntryController.js';
 
 const router = express.Router();
 
@@ -7,7 +7,7 @@ router.post('/', async (req, res) => {
   console.log('Received a POST request to /');
   console.log('Request body:', req.body);
   try {
-    const response = await transactionController.addTransaction(req.body, res);
+    const response = await TransactionEntryController.addTransaction(req.body, res);
     console.log('Response:', response);
     res.send(response);
   } catch (error) {
@@ -15,5 +15,6 @@ router.post('/', async (req, res) => {
     res.status(500).send({ message: 'An error occurred while processing the request.' });
   }
 });
+
 
 export default router;

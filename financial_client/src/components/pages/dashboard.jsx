@@ -1,8 +1,8 @@
 
 import React from 'react';
-import DashboardForm from 'components/pages/forms/high/dashboardForm';
+import DashboardForm from 'components/pages/dashboardForm';
 import { Container } from '@mui/material';
-import ErrorBoundary from 'components/pages/forms/low/errorForm';
+import ErrorBoundary from 'components/pages/forms/subforms/errorForm';
 
 const Dashboard = () => {
 

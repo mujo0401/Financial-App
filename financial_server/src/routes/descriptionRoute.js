@@ -1,10 +1,10 @@
 // routes.js or wherever you define your routes
 
 import express from 'express';
-import descriptionController from '../controllers/descriptionController.js';
+import DescriptionController from '../controllers/descriptionController.js';
 
 const router = express.Router();
 
-router.get('/', descriptionController.getDescriptions);
+router.get('/', DescriptionController.getDescriptions);
 
 export default router;

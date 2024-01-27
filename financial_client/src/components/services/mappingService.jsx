@@ -1,6 +1,6 @@
 const MAPPING_URL = 'http://localhost:3000/api/mapping'; 
 
-const mappingService = {
+const MappingService = {
     getCategoryFromDescription: async () => {
     try {
       const response = await fetch(MAPPING_URL, {
@@ -27,4 +27,4 @@ const mappingService = {
   }
 };
 
-export default mappingService;
+export default MappingService;

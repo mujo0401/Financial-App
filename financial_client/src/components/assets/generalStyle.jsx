@@ -21,6 +21,21 @@ export const StyledTd = styled('td')({
   border: '1px solid #ddd',
 });
 
+export const navStyle = {
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'center',
+  alignItems: 'center',
+  position: 'fixed', 
+  top: '0', 
+  width: '100%', 
+  backgroundColor: 'rgba(10, 147, 150, 0.5)',
+  zIndex: '1000', 
+  ':hover': {
+    backgroundColor: '#0056b3', 
+  },
+};
+
 export const DropzoneStyles = styled('div')(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -52,6 +67,7 @@ export const Style = () => ({
     textAlign: 'left',
     boxShadow: '0 2px 15px rgba(0, 0, 0, 0.1)',
   },
+  
   thead: {
     backgroundColor: '#333',
     color: '#fff',

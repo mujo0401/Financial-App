@@ -1,10 +1,10 @@
 
 import express from 'express';
-import mappingController from '../controllers/mappingController.js';
+import MappingController from '../controllers/mappingController.js';
 
 const router = express.Router();
 
-router.get('/', mappingController.getCategoryKeywords);
+router.get('/', MappingController.getCategoryKeywords);
 
 
 export default router;

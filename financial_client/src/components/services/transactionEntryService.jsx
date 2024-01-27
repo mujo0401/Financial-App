@@ -1,6 +1,6 @@
-const TRANSACTION_URL = 'http://localhost:3000/api/transactions'; 
+const ENTRY_URL = 'http://localhost:3000/api/transactions'; 
 
-const transactionEntryService = {
+const TransactionEntryService = {
   addTransaction: async (transactionData) => {
     try {
       console.log('Transaction data:', transactionData);
@@ -10,7 +10,7 @@ const transactionEntryService = {
 
       setTimeout(() => controller.abort(), 5000); // 5000 ms timeout
 
-      const response = await fetch(TRANSACTION_URL, {
+      const response = await fetch(ENTRY_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -47,7 +47,9 @@ const transactionEntryService = {
     
       return [];
     }
-  }
+  },
+
+
 };
 
-export default transactionEntryService;
+export default TransactionEntryService;

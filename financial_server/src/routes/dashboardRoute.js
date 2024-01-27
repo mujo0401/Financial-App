@@ -1,5 +1,5 @@
 import express from 'express';
-import dashboardController from '../controllers/dashboardController.js';
+import DashboardController from '../controllers/dashboardController.js';
 
 const router = express.Router();
 
@@ -18,7 +18,7 @@ router.get('/spending-by-category', async (req, res) => {
     const { startDate, endDate } = req.query;
     console.log('Start Date:', startDate, 'End Date:', endDate);
     try {
-        const data = await dashboardController.getSpendingByCategory(req.query);
+        const data = await DashboardController.getSpendingByCategory(req.query);
         res.json(data);
     } catch (error) {
         res.status(500).send(error.message);
@@ -28,7 +28,7 @@ router.get('/spending-by-category', async (req, res) => {
 // Route for getting monthly income vs expense
 router.get('/monthly-income-expense', async (req, res) => {
     try {
-        const data = await dashboardController.getMonthlyIncomeVsExpense(req.query);
+        const data = await DashboardController.getMonthlyIncomeVsExpense(req.query);
         res.json(data);
     } catch (error) {
         res.status(500).send(error.message);

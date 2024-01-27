@@ -1,6 +1,6 @@
 import sequelize from "../services/connectionService.js";
 
-const dashboardController = {
+const DashboardController = {
 
     formatSQLDate: (dateString) => {
         // Ensure the date string is correctly formatted (mm-dd-yyyy)
@@ -78,4 +78,4 @@ const dashboardController = {
 };
 
 
-export default dashboardController;
+export default DashboardController;

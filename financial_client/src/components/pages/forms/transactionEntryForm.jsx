@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import CategoryForm from 'components/pages/forms/mid/categoryForm';
-import DescriptionForm from 'components/pages/forms/mid/descriptionForm';
-import AmountForm from 'components/pages/forms/mid/amountForm';
-import transactionEntryService from 'components/services/transactionEntryService';
-import TransactionPreviewForm from 'components/pages/forms/low/transactionPreviewForm';
+import CategoryForm from 'components/pages/forms/categoryForm';
+import DescriptionForm from 'components/pages/forms/descriptionForm';
+import AmountForm from 'components/pages/forms/amountForm';
+import TransactionEntryService from 'components/services/transactionEntryService';
+import TransactionPreviewForm from 'components/pages/forms/subforms/transactionPreviewForm';
 import categoryService from 'components/services/categoryService';
 import descriptionService from 'components/services/descriptionService';
-import MessageForm from 'components/pages/forms/mid/MessageForm';
-import messageService from 'components/services/messageService';
+import MessageForm from 'components/pages/forms/messageForm';
+import MessageService from 'components/services/messageService';
 
 const TransactionEntryForm = () => {
   const today = new Date().toISOString().split('T')[0];
@@ -46,7 +46,7 @@ const TransactionEntryForm = () => {
     e.preventDefault();
   
     if (!currentTransaction.amount) {
-      const response = await messageService.getMessage('Amount_Error');
+      const response = await MessageService.getMessage('Amount_Error');
       const message = response.messageName;
       setMessage(message);
       setMessageType('error');
@@ -54,7 +54,7 @@ const TransactionEntryForm = () => {
     }
 
     if (!currentTransaction.categoryId) {
-      const response = await messageService.getMessage('Category_Error');
+      const response = await MessageService.getMessage('Category_Error');
       const message = response.messageName;
       setMessage(message);
       setMessageType('error');
@@ -62,7 +62,7 @@ const TransactionEntryForm = () => {
     }
     
     if (!currentTransaction.descriptionId) {
-      const response = await messageService.getMessage('Description_Error');
+      const response = await MessageService.getMessage('Description_Error');
       const message = response.messageName;
       setMessage(message);
       setMessageType('error');
@@ -70,27 +70,27 @@ const TransactionEntryForm = () => {
     }
 
     try {
-      const response = await transactionEntryService.addTransaction(currentTransaction);
+      const response = await TransactionEntryService.addTransaction(currentTransaction);
       if (response.status === 200) {
-        const successResponse = await messageService.getMessage('Transaction_Success');
+        const successResponse = await MessageService.getMessage('Transaction_Success');
         const successMessage = successResponse.messageName;
         setMessage(successMessage);
         setMessageType('success');
         handleReset(); 
         setCurrentTransaction(initialTransactionState);
-        const updatedTransactions = await transactionEntryService.getTransactions();
+        const updatedTransactions = await TransactionEntryService.getTransactions();
         setTransaction(updatedTransactions);
         initialTransactionState(); //
       }
 
       if (response.status === 400) {
-        const errorResponse = await messageService.getMessage('Transaction_Error');
+        const errorResponse = await MessageService.getMessage('Transaction_Error');
         const errorMessage = errorResponse.messageName;
         setMessage(errorMessage);
         setMessageType('error');
       }
     } catch (error) {
-      const response = await messageService.getMessage('Server_Error');
+      const response = await MessageService.getMessage('Server_Error');
       const message = response.messageName;
       setMessage(message);
       setMessageType('error');

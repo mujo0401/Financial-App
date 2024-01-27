@@ -1,7 +1,7 @@
 import React from 'react';
-import TransactionEntryForm from 'components/pages/forms/high/transactionEntryForm';
+import TransactionEntryForm from 'components/pages/forms/transactionEntryForm';
 import { Container } from '@mui/material';
-import ErrorBoundary from 'components/pages/forms/low/errorForm';
+import ErrorBoundary from 'components/pages/forms/subforms/errorForm';
 
 
 

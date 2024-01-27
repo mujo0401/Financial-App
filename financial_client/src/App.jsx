@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react';
 import './App.css';
 import backgroundImage from 'components/assets/images/background.png';
-import Navbar from 'components/navigation/Navbar';
+import NavigationForm from 'components/pages/forms/navigationForm';
 import HealthService from 'components/services/healthCheckService';
 import TransactionEntry from 'components/pages/transactionEntry';
-import ErrorBoundary from 'components/pages/forms/low/errorForm';
-import TransactionImport from 'components/pages/forms/high/transactionImport';
+import ErrorBoundary from 'components/pages/forms/subforms/errorForm';
+import TransactionImport from 'components/pages/transactionImport';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from 'components/assets/theme'; 
 import Dashboard from 'components/pages/dashboard'
+import { Style, globalStyle} from 'components/assets/generalStyle';
 
 const App = () => {
   useEffect(() => {
@@ -30,7 +31,7 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <div style={appStyle}>
-        <Navbar />
+      <NavigationForm />
         <div className="body-content">
           <div id="dashboard-section">
             <Dashboard />

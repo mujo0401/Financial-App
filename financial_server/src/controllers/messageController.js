@@ -1,6 +1,6 @@
 import sequelize from "../services/connectionService.js";
 
-const messageController = {
+const MessageController = {
   getMessage: async (messageType, res = null) => {
     try {
       if (!messageType || typeof messageType !== 'string' || messageType.trim() === '') {
@@ -25,12 +25,12 @@ const messageController = {
     } catch (err) {
       console.error('Error getting message:', err);
       if (res) {
-        res.status(500).json({ error: err.message });
+          res.status(500).json({ error: err.message });
       } else {
-        throw err;
+          return { messageName: 'An error occurred while getting the message.' };
       }
     }
   },
 };
 
-export default messageController;
+export default MessageController;

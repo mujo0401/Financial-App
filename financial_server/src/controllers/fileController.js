@@ -2,7 +2,7 @@ import sequelize from "../services/connectionService.js";
 import crypto from 'crypto';
 import messageController from '../controllers/messageController.js';
 
-const fileController = {
+const FileController = {
     createFileData: (file) => {
         console.log('Creating file medta data...');
         const fileData = {
@@ -23,32 +23,37 @@ const fileController = {
     },
         
     addFile: async (fileData) => {
+        if (!fileData || Object.keys(fileData).length === 0) {
+            console.error('No file data provided');
+            const message = await messageController.getMessage('Empty_Error');
+            throw new Error('Empty_Error');
+        }
+    
         console.log('Checking for existing file...');
         const [existingFile] = await sequelize.query('EXEC sp_CheckFile @filehash = :filehash', {
             replacements: { filehash: fileData.filehash },
             type: sequelize.QueryTypes.SELECT
         });
+    
+        if (existingFile) {
+            console.log('File already exists.');
+            throw new Error('Duplication_Error');
+        }
+    
+        try {
+            console.log('Adding new file...');
+            await sequelize.query('EXEC sp_AddFile @filename = :filename, @filesize = :filesize, @importdate = :importdate, @filehash = :filehash, @mediatype = :mediatype, @encoding = :encoding, @isprocessed = :isprocessed', {
+                replacements: fileData,
+                type: sequelize.QueryTypes.INSERT
+            });
 
-      if (existingFile) {
-        console.log('File already exists.');
-        const message = await messageController.getMessage('Duplication_Error');
-        return { messageType: 'Duplication_Error', message };
-    }
+           
+        } catch (error) {
+            console.error('Error adding file:', error);
+            throw error;
+        }
+    },
 
-    try {
-        console.log('Adding new file...');
-        const [results] = await sequelize.query('EXEC sp_AddFile @filename = :filename, @filesize = :filesize, @importdate = :importdate, @filehash = :filehash, @mediatype = :mediatype, @encoding = :encoding, @isprocessed = :isprocessed', {
-            replacements: fileData,
-            type: sequelize.QueryTypes.INSERT
-        });
-        return results;
-        
-    } catch (error) {
-        console.error('Error adding file:', error);
-        const message = await messageController.getMessage('Server_Error');
-        return { messageType: 'Server_Error', message };
-    }
-},
     
     deleteFile: async (hash) => {
         try {
@@ -61,7 +66,20 @@ const fileController = {
             console.error('Error fetching error message:', error);
             return { messageType: 'Delete_Error', message }; 
         }
+    },
+
+    getFileName: async (filehash) => {
+        try {
+            const [file] = await sequelize.query('EXEC getFileName @filehash = :filehash', {
+                replacements: { filehash },
+                type: sequelize.QueryTypes.SELECT
+            });
+            return file ? file.filename : null;
+        } catch (error) {
+            console.error('Error getting filename:', error);
+            throw error;
+        }
     }
 };
 
-export default fileController;
+export default FileController;

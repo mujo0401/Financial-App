@@ -4,7 +4,7 @@ import mappingController from './mappingController.js';
 import categoryController from './categoryController.js';
 import descriptionController from './descriptionController.js';
 
-const parsingController = {
+const ParsingController = {
   getCategoryFromDescription: (description, categoryKeywords) => {
     for (const [category, keywords] of Object.entries(categoryKeywords)) {
         if (keywords.some(keyword => description.includes(keyword))) {
@@ -16,10 +16,9 @@ const parsingController = {
 
   readTextFile: async (filePath) => {
     const fileContent = fs.readFileSync(filePath, 'utf-8');
-    const lines = fileContent.split('\n'); // Adjust this if your file uses a different line delimiter
-
+    const lines = fileContent.split('\n'); 
     for (let line of lines) {
-      const fields = line.split(','); // Adjust the delimiter based on your file's format
+      const fields = line.split(','); 
       const [transDate, , description, amount] = fields;
 
       const categoryName = mappingController.getCategoryFromDescription(description);
@@ -55,4 +54,4 @@ const parsingController = {
     }
 };
 
-export default parsingController;
+export default ParsingController;

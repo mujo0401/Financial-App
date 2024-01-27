@@ -1,4 +1,4 @@
-const mappingController = {
+const MappingController = {
   getCategoryKeywords: async (req, res) => {
     const mapping = {
       "Medical": ["MAYO CLINIC", "North Memorial", "Park Nicollet", "Amazon Pharmacy"],
@@ -23,4 +23,4 @@ const mappingController = {
   }
 };
 
-export default mappingController;
+export default MappingController;

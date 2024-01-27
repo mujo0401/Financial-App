@@ -1,17 +1,11 @@
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import FileService from 'components/services/fileService';
 import { DropzoneStyles, ActiveDropzone } from 'components/assets/generalStyle';
 
-const FileDropForm = ({ onFilesAdded }) => {
-  const onDrop = useCallback(async (acceptedFiles) => {
-    try {
-      const response = await FileService.addFile(acceptedFiles);
-      onFilesAdded(response);
-    } catch (error) {
-      console.error('Error adding files:', error);
-    }
-  }, [onFilesAdded]);
+const FileDropForm = ({ handleFileDrop }) => {
+  const onDrop = useCallback((acceptedFiles) => {
+    handleFileDrop(acceptedFiles);
+  }, [handleFileDrop]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 

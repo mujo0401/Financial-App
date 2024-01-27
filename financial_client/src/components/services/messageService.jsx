@@ -1,6 +1,6 @@
 const MESSAGE_URL = 'http://localhost:3000/api/messages'; 
 
-const messageService = {
+const MessageService = {
   getMessage: async (messageType) => {
     try {
       const response = await fetch(`${MESSAGE_URL}?messageType=${(messageType)}`, {
@@ -27,4 +27,4 @@ const messageService = {
     }
   }
 };
-export default messageService;
+export default MessageService;

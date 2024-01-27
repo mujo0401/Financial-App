@@ -5,16 +5,16 @@ import path from 'path';
 import WebSocket, { WebSocketServer } from 'ws';
 import { createServer } from 'http';
 import morgan from 'morgan';
-import healthRoute from './routes/healthRoute.js';
+import HealthRoute from './routes/healthRoute.js';
 import testConnection from './services/testConnection.js';
-import transactionRoute from './routes/transactionRoute.js';
-import categoryRoute from './routes/categoryRoute.js'; 
-import descriptionRoute from './routes/descriptionRoute.js'; 
-import fileRoute from './routes/fileRoute.js'
-import transactionImportRoute from './routes/transactionImportRoute.js';
-import dashboardRoute from './routes/dashboardRoute.js';
-import mappingRoute from './routes/mappingRoute.js';
-import messageRoute from './routes/messageRoute.js';
+import TransactionEntryRoute from './routes/transactionEntryRoute.js';
+import CategoryRoute from './routes/categoryRoute.js'; 
+import DescriptionRoute from './routes/descriptionRoute.js'; 
+import FileRoute from './routes/fileRoute.js'
+import TransactionImportRoute from './routes/transactionImportRoute.js';
+import DashboardRoute from './routes/dashboardRoute.js';
+import MappingRoute from './routes/mappingRoute.js';
+import MessageRoute from './routes/messageRoute.js';
 
 
 const server = express();
@@ -117,15 +117,15 @@ const __dirname = path.dirname(__filename);
 server.use(express.static(path.join(__dirname, 'public'))); 
 
 // API routes
-server.use('/api/health', healthRoute);
-server.use('/api/dashboard', dashboardRoute);
-server.use('/api/mapping', mappingRoute);
-server.use('/api/categories', categoryRoute);
-server.use('/api/descriptions', descriptionRoute);
-server.use('/api/transactions', transactionRoute);
-server.use('/api/files', fileRoute); 
-server.use('/api/transactionImport', transactionImportRoute);
-server.use('/api/messages', messageRoute);
+server.use('/api/health', HealthRoute);
+server.use('/api/dashboard', DashboardRoute);
+server.use('/api/mapping', MappingRoute);
+server.use('/api/categories', CategoryRoute);
+server.use('/api/descriptions', DescriptionRoute);
+server.use('/api/files', FileRoute); 
+server.use('/api/transactions', TransactionEntryRoute);
+server.use('/api/imports', TransactionImportRoute);
+server.use('/api/messages', MessageRoute);
 
 // Error handling middleware
 server.use((err, req, res, next) => {
